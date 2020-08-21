@@ -19,7 +19,9 @@ function DesktopWindow(options) {
     let $elem = $('<div class="twin_desktop_window"></div>');
     options.$loadContainer.append($elem);
     let home = require("@/pages/home");
-    console.log(home.default.render());
+    console.log(options);
+    options.open(home.default);
+    
 }
 // 原型
 DesktopBg.prototype = {

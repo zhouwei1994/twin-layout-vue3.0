@@ -6,8 +6,20 @@
   </div>
 </template>
 <script>
+export default {
+  name: 'App',
+  components: {
+  },
+  created(){ 
+    
+    // twin.create();
+  },
+  mounted() {
+    
+  },
+}
 </script>
 
-<style>
+<style lang="scss" scoped>
 
 </style>

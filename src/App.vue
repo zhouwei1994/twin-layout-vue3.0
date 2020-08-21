@@ -5,12 +5,13 @@
 
 <script>
 import twin from "@/twinLayout/index"
+import Vue from 'vue'
 export default {
   name: 'App',
   components: {
   },
   created(){ 
-    new twin("#twinLayout", {
+    let twinLayout = new twin("#twinLayout", {
       background: [
         "http://qn.kemean.cn/upload/202008/21/Image.png",
         "http://qn.kemean.cn/upload/202008/21/Image2.png",
@@ -29,6 +30,12 @@ export default {
         "http://qn.kemean.cn/upload/202008/21/Image15.png",
       ]
     });
+    twinLayout.prototype.open = (data) => {
+      let component = Vue.extend(data);
+        console.log(component);
+    };
+    console.log(twinLayout);
+    twinLayout.create();
     // twin.create();
   },
   mounted() {
