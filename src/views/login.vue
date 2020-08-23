@@ -2,16 +2,23 @@
   <div>
       你好
       <span>wode</span>
-      <img src="" alt="">
+      <img src="../assets/icon_pendant.png" alt="">
   </div>
 </template>
 <script>
+import { mapState } from 'vuex';
 export default {
   name: 'App',
   components: {
   },
+  data (){
+    return {}
+  },
+  computed: {
+		...mapState(['userInfo'])
+	},
   created(){ 
-    
+    console.log("-----423423",this.userInfo);
     // twin.create();
   },
   mounted() {

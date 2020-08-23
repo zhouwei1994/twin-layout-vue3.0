@@ -1,3 +1,4 @@
+ @import "http://at.alicdn.com/t/font_2022990_k1bvvbh8bx.css";
  * {
      padding: 0px;
      margin: 0;
@@ -33,5 +34,148 @@
     }
     100% {
         transform: rotate(5deg);
+    }
+}
+
+// 窗口
+.twin_desktop_window {
+    position: fixed;
+    left: 15%;
+    top: 15%;
+    width: 80%;
+    height: 80%;
+    background-color: #FFF;
+    box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.2);
+    &.twin_desktop_window_full_screen {
+        position: fixed;
+        left: 0% !important;
+        top: 0% !important;
+        width: 100% !important;
+        height: 100% !important;
+        .twin_desktop_window_operating_full_screen:before {
+            content: "\e664";
+            font-family: "iconfont";
+            font-size: 16px;
+            font-style: normal;
+        }
+    }
+    .twin_desktop_window_navbar {
+        display: flex;
+        justify-content: space-between;
+        background-color: #FFF;
+        border-bottom: 1px solid #f1f1f1;
+        .win_desktop_window_navbar_info {
+            height: 40px;
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+            flex: 1;
+            cursor: move;
+            .twin_desktop_window_navbar_icon {
+                background-position: center center;
+                background-repeat: no-repeat;
+                background-size: cover;
+                width: 20px;
+                height: 20px;
+            }
+            .twin_desktop_window_navbar_text {
+                margin-left: 10px;
+                color: #333;
+                font-size: 14px;
+            }
+        }
+        .win_desktop_window_navbar_operating {
+            display: flex;
+            align-items: center;
+            i {
+                width: 50px;
+                height: 40px;
+                text-align: center;
+                line-height: 40px;
+                cursor: pointer;
+            }
+            i:hover {
+                background-color: #f1f1f1;
+            }
+            i:before {
+                font-family: "iconfont";
+                font-size: 16px;
+                font-style: normal;
+            }
+            .twin_desktop_window_operating_close:before {
+                content: "\e609";
+            }
+            .twin_desktop_window_operating_min:before {
+                content: "\e629";
+            }
+            .twin_desktop_window_operating_refresh:before {
+                content: "\e61f";
+            }
+        }
+    }
+    .twin_desktop_window_top {
+        position: absolute;
+        top: -3px;
+        left: 0;
+        width: 100%;
+        height: 6px;
+        z-index: 3;
+        cursor: n-resize;
+    }
+    .twin_desktop_window_bottom {
+        position: absolute;
+        bottom: -3px;
+        left: 0;
+        width: 100%;
+        height: 6px;
+        z-index: 3;
+        cursor: s-resize;
+    }
+    .twin_desktop_window_left {
+        position: absolute;
+        left: -3px;
+        top: 0;
+        height: 100%;
+        width: 6px;
+        z-index: 3;
+        cursor: w-resize;
+    }
+    .twin_desktop_window_right {
+        position: absolute;
+        right: -3px;
+        top: 0;
+        height: 100%;
+        width: 6px;
+        z-index: 3;
+        cursor: e-resize;
+    }
+    .twin_desktop_window_operating_full_screen:before {
+        content: "\e668";
+    }
+}
+// 桌面应用
+.twin_desktop_app_item {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    .twin_desktop_app_item_icon {
+        width: 40px;
+        height: 40px;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+    .twin_desktop_app_item_text {
+        margin-top: 15px;
+        color: #FFF;
+        font-size: 14px;
+        text-shadow:#000 1px 1px 1px;
     }
 }

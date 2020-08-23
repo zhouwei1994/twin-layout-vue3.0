@@ -190,7 +190,18 @@ DomElement.prototype = {
             });
         }
     },
-
+    // 判断是否有指定class
+    hasClass: function hasClass(key) {
+        if (!key) {
+            return false;
+        }
+        let className = this[0].className;
+        if (className && className.indexOf(key) >= 0) { 
+            return true;
+        } else {
+            return false;
+        }
+    },
     // 添加 class
     addClass: function addClass(className) {
         if (!className) {
