@@ -37,11 +37,12 @@ export default {
           {
             icon:
               "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "首页",
-            name: "home",
+            title: "用户列表",
+            name: "userList",
             type: "vue",
             hidden: false,
-            path: "views/about",
+            openMore: false,
+            path: "views/userList",
           },
           {
             icon:
@@ -50,6 +51,7 @@ export default {
             name: "home",
             type: "vue",
             hidden: false,
+            openMore: true,
             path: "views/about",
           },
         ]);

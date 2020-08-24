@@ -2,7 +2,6 @@
   <div>
       你好
       <span>{{ userInfo.token }}</span>
-      <img src="../assets/icon_pendant.png" alt="">
   </div>
 </template>
 <script>
@@ -22,12 +21,12 @@ export default {
   },
   mounted() {
     setTimeout(() => {
-      this.setUserInfo({ token: 2222222222222 });
-    }, 6000);
+      this.setUserInfo({ token: 33333333333333 });
+    }, 4000);
   },
   methods: {
     ...mapMutations(["setUserInfo"]),
-  }
+  },
 }
 </script>
 
