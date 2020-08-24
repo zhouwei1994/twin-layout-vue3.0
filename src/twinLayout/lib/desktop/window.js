@@ -48,14 +48,13 @@ export default function DesktopWindow(options, data) {
     </div>`);
     // 窗口容器
     let $windowContainerElem = $(`<div class="twin_desktop_window_container" id="${this.elemId}"></div>`);
+    this.$windowNavbarElem.append(this.$windowNavbarInfoElem);
+    this.$windowElem.append(this.$windowNavbarElem).append($windowContainerElem);
+    options.$loadContainer.append(this.$windowElem);
 
     this.BottomBar(options);
     this.drag(options);
     this.operating(options);
-
-    this.$windowNavbarElem.append(this.$windowNavbarInfoElem);
-    this.$windowElem.append(this.$windowNavbarElem).append($windowContainerElem);
-    options.$loadContainer.append(this.$windowElem);
 
     // 移除其他窗口状态
     desktopWindowList.forEach((item) => {
@@ -67,8 +66,8 @@ export default function DesktopWindow(options, data) {
         $windowElem: this.$windowElem,
         $bottomBarElem: this.$bottomBarElem,
         minimize: this.minimize,
-        remove: () => this.removeWindow(),
-        show: () => this.showWindow(),
+        remove: this.removeWindow,
+        show: this.showWindow,
         ...data,
     });
     //创建完成后更新全局变量
@@ -120,19 +119,19 @@ DesktopWindow.prototype.removeWindow = function (options, de = true) {
 }
 // 显示窗口
 DesktopWindow.prototype.showWindow = function () {
-    console.log(this);
+    let _this = this;
     if (this.zIndex !== windowZIndex) {
         this.$windowElem.css("z-index", windowZIndex);
         windowZIndex++;
     }
     this.$windowElem.show();
     desktopWindowList.forEach((item) => {
-        item.windowView.removeClass("twin_desktop_window_active");
-        item.bottomBarView.removeClass("twin_desktop_bottom_bar_active");
+        item.$windowElem.removeClass("twin_desktop_window_active");
+        item.$bottomBarElem.removeClass("twin_desktop_bottom_bar_active");
     });
     setTimeout(function () {
-        this.$windowElem.addClass("twin_desktop_window_active");
-        this.$bottomBarElem.addClass("twin_desktop_bottom_bar_active");
+        _this.$windowElem.addClass("twin_desktop_window_active");
+        _this.$bottomBarElem.addClass("twin_desktop_bottom_bar_active");
     });
     this.minimize = false;
 }
@@ -146,7 +145,7 @@ DesktopWindow.prototype.BottomBar = function (options) {
     </div>`);
     options.$bottomBarContainer.append(this.$bottomBarElem);
     // 底部菜单点击
-    this.$bottomBarElem.on("click", this.showWindow);
+    this.$bottomBarElem.on("click", this.showWindow.bind(this));
     // 底部菜单右键点击
     this.$bottomBarElem.on("contextmenu", function (e) {
         DesktopClickMenu(options, {
@@ -160,7 +159,7 @@ DesktopWindow.prototype.BottomBar = function (options) {
                     </div>`,
                     click: function () {
                         desktopWindowList.forEach(item => {
-                            item.remove(false);
+                            item.remove(options,false);
                         });
                         desktopWindowList = [];
                     }
@@ -175,7 +174,7 @@ DesktopWindow.prototype.BottomBar = function (options) {
                             if (item.el == _this.elemId) {
                                 return true;
                             } else {
-                                item.remove(false);
+                                item.remove(options,false);
                                 return false;
                             }
                         });
@@ -190,11 +189,12 @@ DesktopWindow.prototype.BottomBar = function (options) {
                         <span>关闭当前</span>
                     </div>`,
                     click: function () {
-                        _this.removeWindow();
+                        _this.removeWindow(options);
                     }
                 }
             ]
         });
+        e.returnValue = false;
         e.stopPropagation();
     });
 }
@@ -242,7 +242,7 @@ DesktopWindow.prototype.operating = function (options) {
     });
     // 窗口关闭
     this.$windowCloseElem.on("click", function (e) {
-        _this.removeWindow();
+        _this.removeWindow(options);
         e.stopPropagation();
     });
     // 窗口最小化
@@ -263,8 +263,8 @@ DesktopWindow.prototype.operating = function (options) {
             windowZIndex++;
         }
         desktopWindowList.forEach((item) => {
-            item.windowView.removeClass("twin_desktop_window_active");
-            item.bottomBarView.removeClass("twin_desktop_bottom_bar_active");
+            item.$windowElem.removeClass("twin_desktop_window_active");
+            item.$bottomBarElem.removeClass("twin_desktop_bottom_bar_active");
         });
         _this.$windowElem.addClass("twin_desktop_window_active");
         _this.$bottomBarElem.addClass("twin_desktop_bottom_bar_active");
