@@ -232,7 +232,6 @@ DomElement.prototype = {
         if (!className) {
             return this;
         }
-        console.log(this);
         return this.forEach(function (elem) {
             var arr = void 0;
             if (elem.className) {
