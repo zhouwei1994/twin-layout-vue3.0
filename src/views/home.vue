@@ -15,6 +15,13 @@ export default {
   created() {},
   mounted() {
     let twinLayout = new twin("#twinLayout", {
+      title: "双生桌面",
+      logo: "http://qiniu.jping.ren/file/files/2020-06/15921923362629yg2lg49",
+      userInfo: {
+        avatar:
+          "http://qiniu.jping.ren/file/files/2020-06/15921923362629yg2lg49",
+        nickname: "子不语",
+      },
       background: [
         "http://qn.kemean.cn/upload/202008/21/Image.png",
         "http://qn.kemean.cn/upload/202008/21/Image2.png",
@@ -32,8 +39,8 @@ export default {
         "http://qn.kemean.cn/upload/202008/21/Image14.png",
         "http://qn.kemean.cn/upload/202008/21/Image15.png",
       ],
-      menus: async () => {
-        return Promise.resolve([
+      menus: (callbcak) => {
+        callbcak([
           {
             icon:
               "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
@@ -65,7 +72,13 @@ export default {
     };
     // 窗口打开
     twin.prototype.open = (data) => {
+      // data.onHide = function() {
+      //   console.log("------------345353543534");
+      // };
       let page = require("@/" + data.path);
+      console.log(page.default);
+      data.onHide = page.default.onHide;
+      data.onShow = page.default.onShow;
       let component = createApp(page.default);
       // 挂载组件
       component.use(store).mount(data.el);
@@ -82,5 +95,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>
