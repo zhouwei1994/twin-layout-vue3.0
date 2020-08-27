@@ -1,5 +1,5 @@
 import { $ } from "./../dom.js";
-import DesktopWindow from "./window.js";
+import DesktopWindow, { allMin, allShow } from "./window.js";
 import "./index.scss";
 let config = {};
 // 桌面背景
@@ -102,9 +102,39 @@ function DesktopBottomBar(options) {
   let $leftOperation = $(
     `<div class="twin_desktop_bottom_bar_operation"></div>`
   );
+  let $bottomBarDesktopLeft = $(`<div class="twin_desktop_bottom_bar_desktop">
+    <i class="twin_desktop_icon_desktop"></i>
+    <span>桌面</span>
+  </div>`);
+  let $bottomBarDesktopMenuLeft = $(`<div class="twin_desktop_bottom_bar_operation_menu twin_desktop_bottom_bar_operation_menu_left"></div>`);
+  let $bottomBarDesktopMenuMinLeft = $(`<div class="twin_desktop_click_menu_item">
+      <i class="twin_desktop_icon_min"></i>
+      <span>全部最小化</span>   
+  </div>`);
+  let $bottomBarDesktopMenuShowLeft = $(`<div class="twin_desktop_click_menu_item">
+      <i class="twin_desktop_icon_unfold"></i>
+      <span>全部展开</span>
+  </div>`);
+  $bottomBarDesktopMenuLeft.append($bottomBarDesktopMenuMinLeft).append($bottomBarDesktopMenuShowLeft);
+  $leftOperation.append($bottomBarDesktopLeft).append($bottomBarDesktopMenuLeft);
   let $rightOperation = $(
     `<div class="twin_desktop_bottom_bar_operation"></div>`
   );
+  let $bottomBarDesktopRight = $(`<div class="twin_desktop_bottom_bar_desktop">
+    <i class="twin_desktop_icon_desktop"></i>
+    <span>桌面</span>
+  </div>`);
+  let $bottomBarDesktopMenuRight = $(`<div class="twin_desktop_bottom_bar_operation_menu twin_desktop_bottom_bar_operation_menu_right"></div>`);
+  let $bottomBarDesktopMenuMinRight = $(`<div class="twin_desktop_click_menu_item">
+      <i class="twin_desktop_icon_min"></i>
+      <span>全部最小化</span>   
+  </div>`);
+  let $bottomBarDesktopMenuShowRight = $(`<div class="twin_desktop_click_menu_item">
+      <i class="twin_desktop_icon_unfold"></i>
+      <span>全部展开</span>
+  </div>`);
+  $bottomBarDesktopMenuRight.append($bottomBarDesktopMenuMinRight).append($bottomBarDesktopMenuShowRight);
+  $rightOperation.append($bottomBarDesktopRight).append($bottomBarDesktopMenuRight);
   options.$bottomBarContainer = $(
     `<div class="twin_desktop_bottom_bar_container"></div>`
   );
@@ -120,6 +150,24 @@ function DesktopBottomBar(options) {
     .append($bottomBar)
     .append(options.$clickMenu)
     .append(options.$positionFrame);
+  $bottomBarDesktopRight.on("click", () => {
+    allMin();
+  });
+  $bottomBarDesktopLeft.on("click", () => {
+    allMin();
+  });
+  $bottomBarDesktopMenuMinRight.on("click", () => {
+    allMin();
+  });
+  $bottomBarDesktopMenuMinLeft.on("click", () => {
+    allMin();
+  });
+  $bottomBarDesktopMenuShowRight.on("click", () => {
+    allShow();
+  });
+  $bottomBarDesktopMenuShowLeft.on("click", () => {
+    allShow();
+  });
   // 关闭点击菜单
   document.body.onclick = function() {
     options.$clickMenu.hide();
@@ -220,7 +268,9 @@ function DesktopUserInfo(options, data) {
         <span class="twin_desktop_top_bar_nickname">${data.nickname}</span>
         <i class="twin_desktop_icon_arrow"></i>
       </a>
+      <div></div>
   </div>`);
+
   options.$rightInfo.append($userInfo);
 }
 // 创建

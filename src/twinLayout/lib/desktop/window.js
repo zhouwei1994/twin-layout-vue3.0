@@ -73,8 +73,9 @@ export default function DesktopWindow(options, data) {
     elemId: this.elemId,
     minimize: this.minimize,
     zIndex: this.zIndex,
-    remove: this.removeWindow.bind(this),
-    show: this.showWindow.bind(this),
+    onRemove: this.removeWindow.bind(this),
+    onShow: this.showWindow.bind(this),
+    onMinimize: this.onMinimize.bind(this),
     ...data,
   });
 
@@ -129,6 +130,7 @@ DesktopWindow.prototype.removeWindow = function(options, de = true) {
 DesktopWindow.prototype.showWindow = function() {
   if (this.zIndex !== windowZIndex) {
     this.$windowElem.css("z-index", windowZIndex);
+    this.zIndex = windowZIndex;
     windowZIndex++;
   }
   this.$windowElem.show();
@@ -145,6 +147,14 @@ DesktopWindow.prototype.showWindow = function() {
   });
   this.minimize = false;
   this.callback.onShow && this.callback.onShow();
+};
+// 最小化
+DesktopWindow.prototype.onMinimize = function () {
+  this.$bottomBarElem.removeClass("twin_desktop_bottom_bar_active");
+  this.$windowElem.removeClass("twin_desktop_window_active");
+  this.$windowElem.hide();
+  this.minimize = true;
+  this.callback.onHide && this.callback.onHide();
 };
 // 底部菜单
 DesktopWindow.prototype.BottomBar = function(options) {
@@ -170,7 +180,7 @@ DesktopWindow.prototype.BottomBar = function(options) {
                     </div>`,
           click: function() {
             desktopWindowList.forEach((item) => {
-              item.remove(options, false);
+              item.onRemove(options, false);
             });
             desktopWindowList = [];
           },
@@ -185,7 +195,7 @@ DesktopWindow.prototype.BottomBar = function(options) {
               if (item.elemId == _this.elemId) {
                 return true;
               } else {
-                item.remove.bind(_this)(options, false);
+                item.onRemove.bind(_this)(options, false);
                 return false;
               }
             });
@@ -210,22 +220,33 @@ DesktopWindow.prototype.BottomBar = function(options) {
 // 下一个窗口高亮
 DesktopWindow.prototype.highlight = function(elemId) {
   let len = desktopWindowList.length;
-  let not = true;
+  let maxZIndex = 0;
+  let maxIndex = 0;
   for (let index = len - 1; index >= 0; index--) {
     const element = desktopWindowList[index];
     if (elemId && elemId == element.elemId) {
-      // element.$windowElem.removeClass("twin_desktop_window_active");
-      // element.$bottomBarElem.removeClass("twin_desktop_bottom_bar_active");
       element.minimize = true;
-    } else if (!element.minimize && not) {
-      not = false;
-      element.$windowElem.addClass("twin_desktop_window_active");
-      element.$bottomBarElem.addClass("twin_desktop_bottom_bar_active");
     } else {
       element.$windowElem.removeClass("twin_desktop_window_active");
       element.$bottomBarElem.removeClass("twin_desktop_bottom_bar_active");
+      if (!element.minimize) { 
+        if (maxZIndex == 0) {
+          maxZIndex = element.zIndex;
+          maxIndex = index;
+        } else if (maxZIndex < element.zIndex) {
+          maxZIndex = element.zIndex;
+          maxIndex = index;
+        }        
+      }
     }
   }
+  setTimeout(() => {
+    if (maxZIndex != 0) {
+      let openItem = desktopWindowList[maxIndex];
+      openItem.$windowElem.addClass("twin_desktop_window_active");
+      openItem.$bottomBarElem.addClass("twin_desktop_bottom_bar_active");
+    }
+  },10);
 };
 // 窗口操作
 DesktopWindow.prototype.operating = function(options) {
@@ -286,26 +307,28 @@ DesktopWindow.prototype.operating = function(options) {
   });
   // 窗口最小化
   this.$windowMinElem.on("click", function(e) {
-    _this.$bottomBarElem.removeClass("twin_desktop_bottom_bar_active");
-    _this.$windowElem.removeClass("twin_desktop_window_active");
-    _this.$windowElem.hide();
-    _this.minimize = true;
+    _this.onMinimize();
     _this.highlight(_this.elemId);
     e.stopPropagation();
-    _this.callback.onHide && _this.callback.onHide();
   });
   // 窗口点击
   this.$windowElem.on("click", function() {
     if (_this.zIndex !== windowZIndex) {
       _this.$windowElem.css("z-index", windowZIndex);
+      _this.zIndex = windowZIndex;
       windowZIndex++;
     }
     desktopWindowList.forEach((item) => {
-      item.$windowElem.removeClass("twin_desktop_window_active");
-      item.$bottomBarElem.removeClass("twin_desktop_bottom_bar_active");
+      if (item.elemId == _this.elemId) {
+        item.$windowElem.addClass("twin_desktop_window_active");
+        item.$bottomBarElem.addClass("twin_desktop_bottom_bar_active");
+        item.minimize = false;
+        item.zIndex = _this.zIndex;
+      } else {
+        item.$windowElem.removeClass("twin_desktop_window_active");
+        item.$bottomBarElem.removeClass("twin_desktop_bottom_bar_active");
+      }
     });
-    _this.$windowElem.addClass("twin_desktop_window_active");
-    _this.$bottomBarElem.addClass("twin_desktop_bottom_bar_active");
   });
 };
 // 窗口拖动
@@ -524,6 +547,23 @@ DesktopWindow.prototype.drag = function(options) {
     startClientX = e.clientX;
   });
 };
+// 最小化所有窗口
+export function allMin() { 
+  desktopWindowList.forEach((item) => {
+    if (!item.minimize) {
+      item.onMinimize();
+      item.minimize = true;
+    }
+  });
+}
+// 展开所有窗口
+export function allShow() {
+  desktopWindowList.forEach((item) => {
+    if (item.minimize) {
+      item.onShow();
+    }
+  });
+}
 // 创建点击菜单
 function DesktopClickMenu(options, data) {
   options.$clickMenu[0].innerHTML = "";
