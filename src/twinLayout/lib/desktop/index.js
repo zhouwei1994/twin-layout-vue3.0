@@ -138,6 +138,15 @@ function DesktopBottomBar(options) {
   options.$bottomBarContainer = $(
     `<div class="twin_desktop_bottom_bar_container"></div>`
   );
+  // 底部菜单拖动
+  options.$bottomBarContainer.on("dragover", function (e) {
+    console.log("放到何处", e);
+    e.preventDefault(); //阻止向上冒泡
+  });
+  options.$bottomBarContainer.on("drop", function (e) {
+    e.preventDefault();
+    console.log("放置",e);
+  });
   options.$clickMenu = $(
     `<div class="twin_desktop_click_menu" style="display:none;"></div>`
   );

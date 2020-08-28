@@ -2,6 +2,9 @@ import { $ } from "./../dom.js";
 let windowZIndex = 50;
 let windowNum = 0;
 let allowMouse = true;
+
+let startClientX = 0;
+let startClientY = 0;
 let desktopWindowList = [];
 // 窗口
 export default function DesktopWindow(options, data) {
@@ -9,7 +12,7 @@ export default function DesktopWindow(options, data) {
     let prohibit = false;
     desktopWindowList.forEach((item) => {
       if (item.name == data.name) {
-        item.show();
+        item.onShow();
         prohibit = true;
       }
     });
@@ -23,7 +26,7 @@ export default function DesktopWindow(options, data) {
   let startLeft = options.clientWidth * 0.15;
   this.top = 40 * windowNum;
   this.left = 40 * windowNum;
-
+  this.windowMouseType = false;
   this.minimize = false;
   this.zIndex = windowZIndex;
   if (options.clientHeight * 0.2 < this.top) {
@@ -167,6 +170,16 @@ DesktopWindow.prototype.BottomBar = function(options) {
   options.$bottomBarContainer.append(this.$bottomBarElem);
   // 底部菜单点击
   this.$bottomBarElem.on("click", this.showWindow.bind(this));
+  // 底部菜单拖动
+  this.$bottomBarElem.on("mousedown", function (e) { 
+    if (!allowMouse) {
+      return false;
+    }
+    _this.windowMouseType = "bottomBarDrag";
+    startClientX = e.clientX;
+    startClientY = e.clientY;
+  });
+  
   // 底部菜单右键点击
   this.$bottomBarElem.on("contextmenu", function(e) {
     DesktopClickMenu(options, {
@@ -345,15 +358,13 @@ DesktopWindow.prototype.drag = function(options) {
     .append(this.$windowRightElem)
     .append(this.$windowBottomElem);
   this.$body = $(document.body);
-  let windowMouseType = false;
-  let startClientX = 0;
-  let startClientY = 0;
+  
 
   this.$body.on("mousemove", function(e) {
     if (!allowMouse) {
       return false;
     }
-    if (windowMouseType == "drag") {
+    if (_this.windowMouseType == "drag") {
       let windowTop = e.clientY - startClientY;
       let windowLeft = e.clientX - startClientX;
       let windowBottom = _this.bottom - windowTop;
@@ -396,7 +407,7 @@ DesktopWindow.prototype.drag = function(options) {
           .css("left", left)
           .css("right", right);
       }
-    } else if (windowMouseType == "sizeTop") {
+    } else if (_this.windowMouseType == "sizeTop") {
       let distance = e.clientY - startClientY;
       if (distance > 0) {
         distance = -distance;
@@ -404,10 +415,10 @@ DesktopWindow.prototype.drag = function(options) {
         distance = Math.abs(distance);
       }
       _this.$windowElem.css("top", _this.top - distance + "px");
-    } else if (windowMouseType == "sizeBottom") {
+    } else if (_this.windowMouseType == "sizeBottom") {
       let distance = e.clientY - startClientY;
       _this.$windowElem.css("bottom", _this.bottom - distance + "px");
-    } else if (windowMouseType == "sizeLeft") {
+    } else if (_this.windowMouseType == "sizeLeft") {
       let distance = e.clientX - startClientX;
       if (distance > 0) {
         distance = -distance;
@@ -416,16 +427,20 @@ DesktopWindow.prototype.drag = function(options) {
       }
       let left = _this.left - distance;
       _this.$windowElem.css("left", left + "px");
-    } else if (windowMouseType == "sizeRight") {
+    } else if (_this.windowMouseType == "sizeRight") {
       let distance = e.clientX - startClientX;
       _this.$windowElem.css("right", _this.right - distance + "px");
+    } else if (_this.windowMouseType == "bottomBarDrag") { 
+      let distance = e.clientX - startClientX;
+      _this.$bottomBarElem.css("position", "relative").css("left", distance + "px").css("opacity", 0.7);
+      console.log(_this.$bottomBarElem[0].width);
     }
   });
   this.$body.on("mouseup", function(e) {
     if (!allowMouse) {
       return false;
     }
-    if (windowMouseType == "drag") {
+    if (_this.windowMouseType == "drag") {
       let top = 0;
       let left = 0;
       let right = 0;
@@ -475,7 +490,7 @@ DesktopWindow.prototype.drag = function(options) {
           .css("left", left + "px")
           .css("right", right + "px");
       }
-    } else if (windowMouseType == "sizeTop") {
+    } else if (_this.windowMouseType == "sizeTop") {
       let distance = e.clientY - startClientY;
       if (distance > 0) {
         distance = -distance;
@@ -484,11 +499,11 @@ DesktopWindow.prototype.drag = function(options) {
       }
       _this.top = _this.top - distance;
       _this.$windowElem.css("top", _this.top + "px");
-    } else if (windowMouseType == "sizeBottom") {
+    } else if (_this.windowMouseType == "sizeBottom") {
       let distance = e.clientY - startClientY;
       _this.bottom = _this.bottom - distance;
       _this.$windowElem.css("bottom", _this.bottom + "px");
-    } else if (windowMouseType == "sizeLeft") {
+    } else if (_this.windowMouseType == "sizeLeft") {
       let distance = e.clientX - startClientX;
       if (distance > 0) {
         distance = -distance;
@@ -497,12 +512,12 @@ DesktopWindow.prototype.drag = function(options) {
       }
       _this.left = _this.left - distance;
       _this.$windowElem.css("left", _this.left + "px");
-    } else if (windowMouseType == "sizeRight") {
+    } else if (_this.windowMouseType == "sizeRight") {
       let distance = e.clientX - startClientX;
       _this.right = _this.right - distance;
       _this.$windowElem.css("right", _this.right + "px");
     }
-    windowMouseType = false;
+    _this.windowMouseType = false;
     startClientX = 0;
     startClientY = 0;
   });
@@ -510,7 +525,7 @@ DesktopWindow.prototype.drag = function(options) {
     if (!allowMouse) {
       return false;
     }
-    windowMouseType = "drag";
+    _this.windowMouseType = "drag";
     startClientX = e.clientX;
     startClientY = e.clientY;
   });
@@ -519,7 +534,7 @@ DesktopWindow.prototype.drag = function(options) {
     if (!allowMouse) {
       return false;
     }
-    windowMouseType = "sizeTop";
+    _this.windowMouseType = "sizeTop";
     startClientY = e.clientY;
   });
   // 窗口向下变大
@@ -527,7 +542,7 @@ DesktopWindow.prototype.drag = function(options) {
     if (!allowMouse) {
       return false;
     }
-    windowMouseType = "sizeBottom";
+    _this.windowMouseType = "sizeBottom";
     startClientY = e.clientY;
   });
   // 窗口向左变大
@@ -535,7 +550,7 @@ DesktopWindow.prototype.drag = function(options) {
     if (!allowMouse) {
       return false;
     }
-    windowMouseType = "sizeLeft";
+    _this.windowMouseType = "sizeLeft";
     startClientX = e.clientX;
   });
   // 窗口向右变大
@@ -543,7 +558,7 @@ DesktopWindow.prototype.drag = function(options) {
     if (!allowMouse) {
       return false;
     }
-    windowMouseType = "sizeRight";
+    _this.windowMouseType = "sizeRight";
     startClientX = e.clientX;
   });
 };
