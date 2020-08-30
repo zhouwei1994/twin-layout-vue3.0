@@ -71,11 +71,11 @@ function DesktopApp(options, res) {
   let appHeight = 100;
   let appInterval = 20;
   let column = 0;
+  let currentIndex = 0;
   let $appContainer = $(`<div class="twin_desktop_app_container"></div>`);
   if (res && Array.isArray(res) && res.length > 0) {
-    res.forEach((item, index) => {
-      let currentIndex = index;
-      let top = appInterval * currentIndex + appHeight * index;
+    res.forEach((item) => {
+      let top = appInterval * currentIndex + appHeight * currentIndex;
       let $elem = $(`<div class="twin_desktop_app_item" style="top:${top}px;left:${appWidth *
         column}px;">
             <i class="twin_desktop_app_item_icon" style="background-image: url(${
@@ -83,8 +83,10 @@ function DesktopApp(options, res) {
             });"></i>
             <span class="twin_desktop_app_item_text">${item.title}</span>
         </div>`);
-      if (top + appHeight + appInterval > options.clientHeight) {
+      currentIndex += 1;
+      if (top + (appHeight + appInterval) * 2 > options.clientHeight - 80) {
         column += 1;
+        currentIndex = 0;
       }
       $appContainer.append($elem);
       $elem.on("click", function() {
@@ -217,9 +219,7 @@ function DesktopTopBar(options) {
   let $browserScreen = $(`<a class="twin_desktop_top_bar_operating" title="全屏">
     <i class="twin_desktop_icon_browser_screen"></i>
   </a>`);
-  let $theme = $(`<a class="twin_desktop_top_bar_operating" title="主题">
-    <i class="twin_desktop_icon_theme"></i>
-  </a>`);
+
   let $notice = $(`<a class="twin_desktop_top_bar_operating" title="通知消息">
     <i class="twin_desktop_icon_notice"></i>
     <span class="twin_desktop_top_bar_operating_dot">+99</span>
@@ -227,7 +227,6 @@ function DesktopTopBar(options) {
   options.$rightInfo
     .append($notice)
     .append($browserScreen)
-    .append($theme)
     .append($language);
   $topBar.append($leftInfo).append(options.$rightInfo);
   options.$loadContainer.append($topBar);
@@ -291,18 +290,21 @@ function DesktopUserInfo(options, data) {
   <a class="twin_desktop_top_bar_user_info" href="javascript:void(0)">
     <img class="twin_desktop_top_bar_avatar" src="${data.avatar}"/>
     <span class="twin_desktop_top_bar_nickname">${data.nickname}</span>
-  `;
-  let $userInfoElem = undefined;
+  <i class="twin_desktop_icon_arrow"></i></a></div>`;
+  let $userInfoElem = $(html);
+  let $userInfoElemMenu = $(
+    `<div class="twin_desktop_top_bar_operating_menu"></div>`
+  );
+  let $theme = $(`<div class="twin_desktop_click_menu_item">
+    <i class="twin_desktop_icon_theme"></i>
+    <span>主题</span>
+  </div>`);
+  $userInfoElemMenu.append($theme);
   if (
     options.userMenus &&
     Array.isArray(options.userMenus) &&
     options.userMenus.length > 0
   ) {
-    html += `<i class="twin_desktop_icon_arrow"></i></a></div>`;
-    $userInfoElem = $(html);
-    let $userInfoElemMenu = $(
-      `<div class="twin_desktop_top_bar_operating_menu"></div>`
-    );
     options.userMenus.forEach((item) => {
       let menuItemHtml = `<div class="twin_desktop_click_menu_item ${
         item.topLine ? "twin_desktop_click_menu_item_line" : ""
@@ -323,11 +325,8 @@ function DesktopUserInfo(options, data) {
         item.onclick && item.onclick(e);
       });
     });
-    $userInfoElem.append($userInfoElemMenu);
-  } else {
-    html += `</a></div>`;
-    $userInfoElem = $(html);
   }
+  $userInfoElem.append($userInfoElemMenu);
   options.$rightInfo.append($userInfoElem);
 }
 // 创建
@@ -339,6 +338,30 @@ function create() {
   this.clientWidth = document.documentElement.clientWidth;
   // 网站高度
   this.clientHeight = document.documentElement.clientHeight;
+
+  let userAgentInfo = navigator.userAgent;
+  let mobileAgents = [
+    "Android",
+    "iPhone",
+    "SymbianOS",
+    "Windows Phone",
+    "iPad",
+    "iPod",
+  ];
+  let mobile_flag = false;
+  //根据userAgent判断是否是手机
+  for (let v = 0; v < mobileAgents.length; v++) {
+    if (userAgentInfo.indexOf(mobileAgents[v]) > 0) {
+      mobile_flag = true;
+      break;
+    }
+  }
+  // 是否是手机模式
+  if (this.clientWidth < 750 || mobile_flag) {
+    this.mobile = true;
+  } else {
+    this.mobile = false;
+  }
   // 添加背景
   DesktopBg(this);
   // 添加顶部
