@@ -22,6 +22,27 @@ export default {
           "http://qiniu.jping.ren/file/files/2020-06/15921923362629yg2lg49",
         nickname: "子不语",
       },
+      userMenus: [
+        {
+          icon: "&#xe60a;",
+          fontFamily: "iconfont",
+          type: "icon",
+          name: "个人中心",
+          onclick: function() {
+            console.log("个人中心");
+          },
+        },
+        {
+          icon: "&#xe60c;",
+          fontFamily: "iconfont",
+          type: "icon",
+          name: "退出",
+          topLine: true,
+          onclick: function() {
+            console.log("退出");
+          },
+        },
+      ],
       background: [
         "http://qn.kemean.cn/upload/202008/21/Image.png",
         "http://qn.kemean.cn/upload/202008/21/Image2.png",

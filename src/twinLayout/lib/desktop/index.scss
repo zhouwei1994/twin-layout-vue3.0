@@ -1,11 +1,12 @@
 @font-face {
-  font-family: 'iconfont';  /* project id 2022990 */
-  src: url('//at.alicdn.com/t/font_2022990_c6nrp5b69nu.eot');
-  src: url('//at.alicdn.com/t/font_2022990_c6nrp5b69nu.eot?#iefix') format('embedded-opentype'),
-  url('//at.alicdn.com/t/font_2022990_c6nrp5b69nu.woff2') format('woff2'),
-  url('//at.alicdn.com/t/font_2022990_c6nrp5b69nu.woff') format('woff'),
-  url('//at.alicdn.com/t/font_2022990_c6nrp5b69nu.ttf') format('truetype'),
-  url('//at.alicdn.com/t/font_2022990_c6nrp5b69nu.svg#iconfont') format('svg');
+  font-family: "iconfont"; /* project id 2022990 */
+  src: url("//at.alicdn.com/t/font_2022990_wuidi2i697s.eot");
+  src: url("//at.alicdn.com/t/font_2022990_wuidi2i697s.eot?#iefix")
+      format("embedded-opentype"),
+    url("//at.alicdn.com/t/font_2022990_wuidi2i697s.woff2") format("woff2"),
+    url("//at.alicdn.com/t/font_2022990_wuidi2i697s.woff") format("woff"),
+    url("//at.alicdn.com/t/font_2022990_wuidi2i697s.ttf") format("truetype"),
+    url("//at.alicdn.com/t/font_2022990_wuidi2i697s.svg#iconfont") format("svg");
 }
 * {
   padding: 0px;
@@ -46,6 +47,10 @@
 }
 .twin_desktop_icon_unfold:before {
   content: "\e608";
+}
+.twin_desktop_icon_theme:before {
+  content: "\e66f";
+  font-size: 18px;
 }
 .twin_desktop_bg {
   position: relative;
@@ -274,7 +279,7 @@
   right: 0;
   bottom: 0;
   z-index: 99999;
-  background:hsla(0,0%,100%,.5) border-box;
+  background: hsla(0, 0%, 100%, 0.5) border-box;
   display: flex;
   -moz-user-select: none; /*火狐*/
   -webkit-user-select: none; /*webkit浏览器*/
@@ -284,45 +289,6 @@
   .twin_desktop_bottom_bar_container {
     display: flex;
     flex: 1;
-    .twin_desktop_bottom_bar_item {
-      flex: 1;
-      max-width: 150px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: rgba(255, 255, 255, 0.3);
-      box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
-      padding: 0 5px;
-      width: 0;
-      cursor: pointer;
-      animation-name: twinDesktopBottomBar;
-      animation-duration: 0.3s;
-      -moz-user-select: none; /*火狐*/
-      -webkit-user-select: none; /*webkit浏览器*/
-      -ms-user-select: none; /*IE10*/
-      -khtml-user-select: none; /*早期浏览器*/
-      user-select: none;
-      &.twin_desktop_bottom_bar_active {
-        background-color: rgba(255, 0, 0, 0.5);
-      }
-      .twin_desktop_bottom_bar_icon {
-        width: 20px;
-        height: 20px;
-        background-position: center center;
-        background-repeat: no-repeat;
-        background-size: cover;
-        flex-shrink: 0;
-      }
-      .twin_desktop_bottom_bar_text {
-        font-size: 14px;
-        color: #fff;
-        text-shadow: 0px 0px 0px #fff, 0px 0px 2px #000, 0px 0px 4px #000;
-        margin-left: 8px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-    }
   }
   .twin_desktop_bottom_bar_operation {
     .twin_desktop_bottom_bar_desktop {
@@ -337,18 +303,17 @@
         font-family: "iconfont";
         font-size: 16px;
         font-style: normal;
-        color: #FFF;
+        color: #fff;
         text-shadow: 0px 0px 0px #fff, 0px 0px 2px #000, 0px 0px 4px #000;
       }
       span {
         font-size: 14px;
-        color: #FFF;
+        color: #fff;
         text-shadow: 0px 0px 0px #fff, 0px 0px 2px #000, 0px 0px 4px #000;
         margin-left: 10px;
       }
       &:hover {
         background-color: rgba(255, 255, 255, 0.3);
-        
       }
     }
     &:hover {
@@ -364,7 +329,7 @@
       box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
       width: 190px;
       transition: all 0.3s;
-      
+
       opacity: 0;
     }
     .twin_desktop_bottom_bar_operation_menu_left {
@@ -377,29 +342,88 @@
     }
   }
 }
+.twin_desktop_bottom_bar_item {
+  flex: 1;
+  max-width: 150px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
+  padding: 0 5px;
+  width: 0;
+  cursor: pointer;
+  -moz-user-select: none; /*火狐*/
+  -webkit-user-select: none; /*webkit浏览器*/
+  -ms-user-select: none; /*IE10*/
+  -khtml-user-select: none; /*早期浏览器*/
+  user-select: none;
+  &.twin_desktop_bottom_bar_active {
+    background-color: rgba(255, 0, 0, 0.5);
+  }
+  .twin_desktop_bottom_bar_icon {
+    width: 20px;
+    height: 20px;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    flex-shrink: 0;
+  }
+  .twin_desktop_bottom_bar_text {
+    font-size: 14px;
+    color: #fff;
+    text-shadow: 0px 0px 0px #fff, 0px 0px 2px #000, 0px 0px 4px #000;
+    margin-left: 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+.twin_desktop_bottom_bar_item_drag {
+  position: fixed;
+  bottom: 0;
+  opacity: 0.7;
+  z-index: 99999;
+  transition: initial;
+}
 // 桌面点击菜单
-.twin_desktop_bottom_bar_operation_menu, .twin_desktop_click_menu {
+.twin_desktop_bottom_bar_operation_menu,
+.twin_desktop_click_menu,
+.twin_desktop_top_bar_operating_menu {
   .twin_desktop_click_menu_item {
     padding: 0 10px;
     height: 40px;
     display: flex;
     align-items: center;
-    border-top: 1px solid #f1f1f1;
-
+    -moz-user-select: none; /*火狐*/
+    -webkit-user-select: none; /*webkit浏览器*/
+    -ms-user-select: none; /*IE10*/
+    -khtml-user-select: none; /*早期浏览器*/
+    user-select: none;
     cursor: pointer;
+    &.twin_desktop_click_menu_item_line {
+      border-top: 1px solid #f1f1f1;
+    }
     &:hover {
       background-color: #eee;
     }
-    i {
+    i,
+    img {
       width: 20px;
       height: 20px;
       text-align: center;
       line-height: 20px;
+      font-style: normal;
+      color: #333;
+      font-family: "iconfont";
+      font-size: 14px;
     }
     i:before {
       font-family: "iconfont";
       font-size: 14px;
       font-style: normal;
+      color: #333;
     }
 
     span {
@@ -415,8 +439,43 @@
   top: 50%;
   background-color: #fff;
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
-  width: 190px;
+  width: 160px;
   z-index: 10000;
+}
+.twin_desktop_top_bar_operating_menu {
+  position: absolute;
+  top: 100%;
+  right: 5px;
+  background-color: #fff;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
+  width: 160px;
+  z-index: 10000;
+  transition: all 0.3s;
+  transform: scale(0);
+  opacity: 0;
+  &::after {
+    content: "";
+    display: inline-block;
+    border-left: 6px solid rgba(0, 0, 0, 0);
+    border-right: 6px solid rgba(0, 0, 0, 0);
+    border-bottom: 6px solid #fff;
+    position: absolute;
+    top: -6px;
+    right: 10px;
+  }
+  &:before {
+    content: "";
+    left: auto;
+    right: 12px;
+    display: inline-block;
+    position: absolute;
+    border-left: 7px solid rgba(0, 0, 0, 0);
+    border-right: 7px solid rgba(0, 0, 0, 0);
+    top: -7px;
+    border-bottom: 7px solid #ccc;
+    border-bottom-color: rgba(0, 0, 0, 0.2);
+    right: 9px;
+  }
 }
 // 头部导航
 .twin_desktop_top_bar {
@@ -459,6 +518,10 @@
       position: relative;
       &:hover {
         background-color: rgba(255, 255, 255, 0.3);
+        .twin_desktop_top_bar_operating_menu {
+          opacity: 1;
+          transform: scale(1);
+        }
       }
       .twin_desktop_icon_arrow {
         color: #fff;
@@ -466,7 +529,8 @@
         font-size: 12px;
         margin-left: 8px;
       }
-      i {
+      > i,
+      > a i {
         color: #fff;
         text-shadow: 0px 0px 0px #fff, 0px 0px 4px #000;
         font-size: 14px;

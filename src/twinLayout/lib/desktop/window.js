@@ -3,8 +3,6 @@ let windowZIndex = 50;
 let windowNum = 0;
 let allowMouse = true;
 
-let startClientX = 0;
-let startClientY = 0;
 let desktopWindowList = [];
 // 窗口
 export default function DesktopWindow(options, data) {
@@ -116,6 +114,7 @@ DesktopWindow.prototype.removeWindow = function(options, de = true) {
   this.$body.off("mousemove", function() {});
   this.$body.off("mouseup", function() {});
   this.$bottomBarElem.off("click", function() {});
+  this.$bottomBarElem.off("mousedown", function() {});
   this.$bottomBarElem.off("contextmenu", function() {});
   // 删除当前窗口
   this.$windowElem.remove();
@@ -152,7 +151,7 @@ DesktopWindow.prototype.showWindow = function() {
   this.callback.onShow && this.callback.onShow();
 };
 // 最小化
-DesktopWindow.prototype.onMinimize = function () {
+DesktopWindow.prototype.onMinimize = function() {
   this.$bottomBarElem.removeClass("twin_desktop_bottom_bar_active");
   this.$windowElem.removeClass("twin_desktop_window_active");
   this.$windowElem.hide();
@@ -168,18 +167,32 @@ DesktopWindow.prototype.BottomBar = function(options) {
         <span class="twin_desktop_bottom_bar_text">${this.data.title}</span>
     </div>`);
   options.$bottomBarContainer.append(this.$bottomBarElem);
-  // 底部菜单点击
-  this.$bottomBarElem.on("click", this.showWindow.bind(this));
+
   // 底部菜单拖动
-  this.$bottomBarElem.on("mousedown", function (e) { 
+  this.$bottomBarElem.on("mousedown", function(e) {
+    _this.showWindow();
     if (!allowMouse) {
       return false;
     }
+    let bottomBarElem = _this.$bottomBarElem[0];
+    _this.bottomBarElemWidth = bottomBarElem.offsetWidth;
+    _this.bottomBarElemOffsetLeft = bottomBarElem.offsetLeft;
+    options.$bottomBarContainer.childNodes().forEach((item, index) => {
+      if (_this.$bottomBarElem.equal(item)) {
+        _this.bottomBarElemIndex = index;
+      }
+    });
+    _this.$bottomBarNewElem = _this.$bottomBarElem.clone(true);
+    _this.$bottomBarNewElem
+      .addClass("twin_desktop_bottom_bar_item_drag")
+      .css("left", _this.bottomBarElemOffsetLeft + "px")
+      .css("width", _this.bottomBarElemWidth + "px");
+    options.$loadContainer.append(_this.$bottomBarNewElem);
+    _this.$bottomBarElem.css("opacity", 0);
     _this.windowMouseType = "bottomBarDrag";
-    startClientX = e.clientX;
-    startClientY = e.clientY;
+    _this.startClientX = e.clientX;
+    _this.startClientY = e.clientY;
   });
-  
   // 底部菜单右键点击
   this.$bottomBarElem.on("contextmenu", function(e) {
     DesktopClickMenu(options, {
@@ -242,14 +255,14 @@ DesktopWindow.prototype.highlight = function(elemId) {
     } else {
       element.$windowElem.removeClass("twin_desktop_window_active");
       element.$bottomBarElem.removeClass("twin_desktop_bottom_bar_active");
-      if (!element.minimize) { 
+      if (!element.minimize) {
         if (maxZIndex == 0) {
           maxZIndex = element.zIndex;
           maxIndex = index;
         } else if (maxZIndex < element.zIndex) {
           maxZIndex = element.zIndex;
           maxIndex = index;
-        }        
+        }
       }
     }
   }
@@ -259,7 +272,7 @@ DesktopWindow.prototype.highlight = function(elemId) {
       openItem.$windowElem.addClass("twin_desktop_window_active");
       openItem.$bottomBarElem.addClass("twin_desktop_bottom_bar_active");
     }
-  },10);
+  }, 10);
 };
 // 窗口操作
 DesktopWindow.prototype.operating = function(options) {
@@ -284,6 +297,7 @@ DesktopWindow.prototype.operating = function(options) {
     .append(this.$windowfullScreenElem)
     .append(this.$windowCloseElem);
   this.$windowNavbarElem.append($windowOperatingElem);
+
   // 窗口刷新
   this.$windowRefreshElem.on("click", function(e) {
     options.remove &&
@@ -358,15 +372,15 @@ DesktopWindow.prototype.drag = function(options) {
     .append(this.$windowRightElem)
     .append(this.$windowBottomElem);
   this.$body = $(document.body);
-  
-
+  _this.startClientX = 0;
+  _this.startClientY = 0;
   this.$body.on("mousemove", function(e) {
     if (!allowMouse) {
       return false;
     }
     if (_this.windowMouseType == "drag") {
-      let windowTop = e.clientY - startClientY;
-      let windowLeft = e.clientX - startClientX;
+      let windowTop = e.clientY - _this.startClientY;
+      let windowLeft = e.clientX - _this.startClientX;
       let windowBottom = _this.bottom - windowTop;
       if (windowBottom > options.clientHeight - 40) {
         windowBottom = options.clientHeight - 40;
@@ -408,7 +422,7 @@ DesktopWindow.prototype.drag = function(options) {
           .css("right", right);
       }
     } else if (_this.windowMouseType == "sizeTop") {
-      let distance = e.clientY - startClientY;
+      let distance = e.clientY - _this.startClientY;
       if (distance > 0) {
         distance = -distance;
       } else {
@@ -416,10 +430,10 @@ DesktopWindow.prototype.drag = function(options) {
       }
       _this.$windowElem.css("top", _this.top - distance + "px");
     } else if (_this.windowMouseType == "sizeBottom") {
-      let distance = e.clientY - startClientY;
+      let distance = e.clientY - _this.startClientY;
       _this.$windowElem.css("bottom", _this.bottom - distance + "px");
     } else if (_this.windowMouseType == "sizeLeft") {
-      let distance = e.clientX - startClientX;
+      let distance = e.clientX - _this.startClientX;
       if (distance > 0) {
         distance = -distance;
       } else {
@@ -428,12 +442,49 @@ DesktopWindow.prototype.drag = function(options) {
       let left = _this.left - distance;
       _this.$windowElem.css("left", left + "px");
     } else if (_this.windowMouseType == "sizeRight") {
-      let distance = e.clientX - startClientX;
+      let distance = e.clientX - _this.startClientX;
       _this.$windowElem.css("right", _this.right - distance + "px");
-    } else if (_this.windowMouseType == "bottomBarDrag") { 
-      let distance = e.clientX - startClientX;
-      _this.$bottomBarElem.css("position", "relative").css("left", distance + "px").css("opacity", 0.7);
-      console.log(_this.$bottomBarElem[0].width);
+    } else if (_this.windowMouseType == "bottomBarDrag") {
+      let distance = e.clientX - _this.startClientX;
+      let moves = Math.abs(distance) / _this.bottomBarElemWidth;
+      let movesInt = parseInt(moves);
+      _this.$bottomBarNewElem.css(
+        "left",
+        _this.bottomBarElemOffsetLeft + distance + "px"
+      );
+      if (moves >= 0.5) {
+        let positionIndex = 0;
+        if (distance > 0) {
+          positionIndex = movesInt + _this.bottomBarElemIndex;
+        } else {
+          positionIndex = _this.bottomBarElemIndex - movesInt;
+        }
+
+        let $bottomBarContainerList = options.$bottomBarContainer[0].childNodes;
+        if (
+          positionIndex >= 0 &&
+          positionIndex <= $bottomBarContainerList.length
+        ) {
+          let finallyIndex = positionIndex;
+          if (moves - movesInt >= 0.5) {
+            finallyIndex = positionIndex + 1;
+          }
+          options.$bottomBarContainer[0].insertBefore(
+            _this.$bottomBarElem[0],
+            $bottomBarContainerList[finallyIndex]
+          );
+          if (distance > 0) {
+            _this.startClientX += movesInt * _this.bottomBarElemWidth;
+            _this.bottomBarElemOffsetLeft +=
+              movesInt * _this.bottomBarElemWidth;
+          } else {
+            _this.startClientX -= movesInt * _this.bottomBarElemWidth;
+            _this.bottomBarElemOffsetLeft -=
+              movesInt * _this.bottomBarElemWidth;
+          }
+          _this.bottomBarElemIndex = positionIndex;
+        }
+      }
     }
   });
   this.$body.on("mouseup", function(e) {
@@ -460,8 +511,8 @@ DesktopWindow.prototype.drag = function(options) {
         right = 0;
       }
       if (top == 0 && bottom == 40 && left == 0 && right == 0) {
-        let windowTop = e.clientY - startClientY;
-        let windowLeft = e.clientX - startClientX;
+        let windowTop = e.clientY - _this.startClientY;
+        let windowLeft = e.clientX - _this.startClientX;
         _this.bottom = _this.bottom - windowTop;
         if (_this.bottom > options.clientHeight - 40) {
           _this.bottom = options.clientHeight - 40;
@@ -491,7 +542,7 @@ DesktopWindow.prototype.drag = function(options) {
           .css("right", right + "px");
       }
     } else if (_this.windowMouseType == "sizeTop") {
-      let distance = e.clientY - startClientY;
+      let distance = e.clientY - _this.startClientY;
       if (distance > 0) {
         distance = -distance;
       } else {
@@ -500,11 +551,11 @@ DesktopWindow.prototype.drag = function(options) {
       _this.top = _this.top - distance;
       _this.$windowElem.css("top", _this.top + "px");
     } else if (_this.windowMouseType == "sizeBottom") {
-      let distance = e.clientY - startClientY;
+      let distance = e.clientY - _this.startClientY;
       _this.bottom = _this.bottom - distance;
       _this.$windowElem.css("bottom", _this.bottom + "px");
     } else if (_this.windowMouseType == "sizeLeft") {
-      let distance = e.clientX - startClientX;
+      let distance = e.clientX - _this.startClientX;
       if (distance > 0) {
         distance = -distance;
       } else {
@@ -513,21 +564,24 @@ DesktopWindow.prototype.drag = function(options) {
       _this.left = _this.left - distance;
       _this.$windowElem.css("left", _this.left + "px");
     } else if (_this.windowMouseType == "sizeRight") {
-      let distance = e.clientX - startClientX;
+      let distance = e.clientX - _this.startClientX;
       _this.right = _this.right - distance;
       _this.$windowElem.css("right", _this.right + "px");
+    } else if (_this.windowMouseType == "bottomBarDrag") {
+      _this.$bottomBarNewElem.remove();
+      _this.$bottomBarElem.css("opacity", 1);
     }
     _this.windowMouseType = false;
-    startClientX = 0;
-    startClientY = 0;
+    _this.startClientX = 0;
+    _this.startClientY = 0;
   });
   this.$windowNavbarInfoElem.on("mousedown", function(e) {
     if (!allowMouse) {
       return false;
     }
     _this.windowMouseType = "drag";
-    startClientX = e.clientX;
-    startClientY = e.clientY;
+    _this.startClientX = e.clientX;
+    _this.startClientY = e.clientY;
   });
   // 窗口向上变大
   this.$windowTopElem.on("mousedown", function(e) {
@@ -535,7 +589,7 @@ DesktopWindow.prototype.drag = function(options) {
       return false;
     }
     _this.windowMouseType = "sizeTop";
-    startClientY = e.clientY;
+    _this.startClientY = e.clientY;
   });
   // 窗口向下变大
   this.$windowBottomElem.on("mousedown", function(e) {
@@ -543,7 +597,7 @@ DesktopWindow.prototype.drag = function(options) {
       return false;
     }
     _this.windowMouseType = "sizeBottom";
-    startClientY = e.clientY;
+    _this.startClientY = e.clientY;
   });
   // 窗口向左变大
   this.$windowLeftElem.on("mousedown", function(e) {
@@ -551,7 +605,7 @@ DesktopWindow.prototype.drag = function(options) {
       return false;
     }
     _this.windowMouseType = "sizeLeft";
-    startClientX = e.clientX;
+    _this.startClientX = e.clientX;
   });
   // 窗口向右变大
   this.$windowRightElem.on("mousedown", function(e) {
@@ -559,11 +613,11 @@ DesktopWindow.prototype.drag = function(options) {
       return false;
     }
     _this.windowMouseType = "sizeRight";
-    startClientX = e.clientX;
+    _this.startClientX = e.clientX;
   });
 };
 // 最小化所有窗口
-export function allMin() { 
+export function allMin() {
   desktopWindowList.forEach((item) => {
     if (!item.minimize) {
       item.onMinimize();

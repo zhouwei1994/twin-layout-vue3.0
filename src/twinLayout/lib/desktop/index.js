@@ -106,7 +106,9 @@ function DesktopBottomBar(options) {
     <i class="twin_desktop_icon_desktop"></i>
     <span>桌面</span>
   </div>`);
-  let $bottomBarDesktopMenuLeft = $(`<div class="twin_desktop_bottom_bar_operation_menu twin_desktop_bottom_bar_operation_menu_left"></div>`);
+  let $bottomBarDesktopMenuLeft = $(
+    `<div class="twin_desktop_bottom_bar_operation_menu twin_desktop_bottom_bar_operation_menu_left"></div>`
+  );
   let $bottomBarDesktopMenuMinLeft = $(`<div class="twin_desktop_click_menu_item">
       <i class="twin_desktop_icon_min"></i>
       <span>全部最小化</span>   
@@ -115,8 +117,12 @@ function DesktopBottomBar(options) {
       <i class="twin_desktop_icon_unfold"></i>
       <span>全部展开</span>
   </div>`);
-  $bottomBarDesktopMenuLeft.append($bottomBarDesktopMenuMinLeft).append($bottomBarDesktopMenuShowLeft);
-  $leftOperation.append($bottomBarDesktopLeft).append($bottomBarDesktopMenuLeft);
+  $bottomBarDesktopMenuLeft
+    .append($bottomBarDesktopMenuMinLeft)
+    .append($bottomBarDesktopMenuShowLeft);
+  $leftOperation
+    .append($bottomBarDesktopLeft)
+    .append($bottomBarDesktopMenuLeft);
   let $rightOperation = $(
     `<div class="twin_desktop_bottom_bar_operation"></div>`
   );
@@ -124,7 +130,9 @@ function DesktopBottomBar(options) {
     <i class="twin_desktop_icon_desktop"></i>
     <span>桌面</span>
   </div>`);
-  let $bottomBarDesktopMenuRight = $(`<div class="twin_desktop_bottom_bar_operation_menu twin_desktop_bottom_bar_operation_menu_right"></div>`);
+  let $bottomBarDesktopMenuRight = $(
+    `<div class="twin_desktop_bottom_bar_operation_menu twin_desktop_bottom_bar_operation_menu_right"></div>`
+  );
   let $bottomBarDesktopMenuMinRight = $(`<div class="twin_desktop_click_menu_item">
       <i class="twin_desktop_icon_min"></i>
       <span>全部最小化</span>   
@@ -133,19 +141,23 @@ function DesktopBottomBar(options) {
       <i class="twin_desktop_icon_unfold"></i>
       <span>全部展开</span>
   </div>`);
-  $bottomBarDesktopMenuRight.append($bottomBarDesktopMenuMinRight).append($bottomBarDesktopMenuShowRight);
-  $rightOperation.append($bottomBarDesktopRight).append($bottomBarDesktopMenuRight);
+  $bottomBarDesktopMenuRight
+    .append($bottomBarDesktopMenuMinRight)
+    .append($bottomBarDesktopMenuShowRight);
+  $rightOperation
+    .append($bottomBarDesktopRight)
+    .append($bottomBarDesktopMenuRight);
   options.$bottomBarContainer = $(
     `<div class="twin_desktop_bottom_bar_container"></div>`
   );
   // 底部菜单拖动
-  options.$bottomBarContainer.on("dragover", function (e) {
+  options.$bottomBarContainer.on("dragover", function(e) {
     console.log("放到何处", e);
     e.preventDefault(); //阻止向上冒泡
   });
-  options.$bottomBarContainer.on("drop", function (e) {
+  options.$bottomBarContainer.on("drop", function(e) {
     e.preventDefault();
-    console.log("放置",e);
+    console.log("放置", e);
   });
   options.$clickMenu = $(
     `<div class="twin_desktop_click_menu" style="display:none;"></div>`
@@ -205,6 +217,9 @@ function DesktopTopBar(options) {
   let $browserScreen = $(`<a class="twin_desktop_top_bar_operating" title="全屏">
     <i class="twin_desktop_icon_browser_screen"></i>
   </a>`);
+  let $theme = $(`<a class="twin_desktop_top_bar_operating" title="主题">
+    <i class="twin_desktop_icon_theme"></i>
+  </a>`);
   let $notice = $(`<a class="twin_desktop_top_bar_operating" title="通知消息">
     <i class="twin_desktop_icon_notice"></i>
     <span class="twin_desktop_top_bar_operating_dot">+99</span>
@@ -212,6 +227,7 @@ function DesktopTopBar(options) {
   options.$rightInfo
     .append($notice)
     .append($browserScreen)
+    .append($theme)
     .append($language);
   $topBar.append($leftInfo).append(options.$rightInfo);
   options.$loadContainer.append($topBar);
@@ -271,16 +287,48 @@ function DesktopGetUserInfo(options) {
   }
 }
 function DesktopUserInfo(options, data) {
-  let $userInfo = $(`<div class="twin_desktop_top_bar_operating">
-      <a class="twin_desktop_top_bar_user_info" href="javascript:void(0)">
-        <img class="twin_desktop_top_bar_avatar" src="${data.avatar}"/>
-        <span class="twin_desktop_top_bar_nickname">${data.nickname}</span>
-        <i class="twin_desktop_icon_arrow"></i>
-      </a>
-      <div></div>
-  </div>`);
-
-  options.$rightInfo.append($userInfo);
+  let html = `<div class="twin_desktop_top_bar_operating">
+  <a class="twin_desktop_top_bar_user_info" href="javascript:void(0)">
+    <img class="twin_desktop_top_bar_avatar" src="${data.avatar}"/>
+    <span class="twin_desktop_top_bar_nickname">${data.nickname}</span>
+  `;
+  let $userInfoElem = undefined;
+  if (
+    options.userMenus &&
+    Array.isArray(options.userMenus) &&
+    options.userMenus.length > 0
+  ) {
+    html += `<i class="twin_desktop_icon_arrow"></i></a></div>`;
+    $userInfoElem = $(html);
+    let $userInfoElemMenu = $(
+      `<div class="twin_desktop_top_bar_operating_menu"></div>`
+    );
+    options.userMenus.forEach((item) => {
+      let menuItemHtml = `<div class="twin_desktop_click_menu_item ${
+        item.topLine ? "twin_desktop_click_menu_item_line" : ""
+      }">`;
+      if (item.type == "icon") {
+        if (item.fontFamily) {
+          menuItemHtml += `<i style="font-family: '${item.fontFamily}';">${item.icon}</i>`;
+        } else {
+          menuItemHtml += `<i>${item.icon}</i>`;
+        }
+      } else if (item.type == "image") {
+        menuItemHtml += `<img class="twin_desktop_icon_garden_close" src="${item.icon}" />`;
+      }
+      menuItemHtml += `<span>${item.name || "未定义"}</span></div>`;
+      let $userInfoElemMenuItem = $(menuItemHtml);
+      $userInfoElemMenu.append($userInfoElemMenuItem);
+      $userInfoElemMenuItem.on("click", function(e) {
+        item.onclick && item.onclick(e);
+      });
+    });
+    $userInfoElem.append($userInfoElemMenu);
+  } else {
+    html += `</a></div>`;
+    $userInfoElem = $(html);
+  }
+  options.$rightInfo.append($userInfoElem);
 }
 // 创建
 function create() {
