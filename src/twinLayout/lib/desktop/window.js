@@ -113,10 +113,10 @@ DesktopWindow.prototype.removeWindow = function(options, de = true) {
       ...this.data,
     });
   // 解除绑定的事件
-  this.$windowMinElem.off("click", function() {});
   this.$windowCloseElem.off("click", function() {});
   this.$windowRefreshElem.off("click", function() {});
   if (!options.mobile) { 
+    this.$windowMinElem.off("click", function() {});
     this.$windowfullScreenElem.off("click", function () { });
     this.$bottomBarElem.off("click", function () { });
     this.$bottomBarElem.off("mousedown", function () { });
@@ -306,18 +306,19 @@ DesktopWindow.prototype.operating = function(options) {
   );
   // 窗口刷新
   this.$windowRefreshElem = $(`<i class="twin_desktop_icon_refresh"></i>`);
-  // 窗口最小化
-  this.$windowMinElem = $(`<i class="twin_desktop_icon_min"></i>`);
+  
   // 窗口关闭
   this.$windowCloseElem = $(`<i class="twin_desktop_icon_close"></i>`);
   $windowOperatingElem
-    .append(this.$windowRefreshElem).append(this.$windowMinElem);
+    .append(this.$windowRefreshElem);
   if (!options.mobile) {
+    // 窗口最小化
+    this.$windowMinElem = $(`<i class="twin_desktop_icon_min"></i>`);
     // 窗口全屏、窗口切换
     this.$windowfullScreenElem = $(
       `<i class="twin_desktop_icon_window_screen"></i>`
     );
-    $windowOperatingElem
+    $windowOperatingElem.append(this.$windowMinElem)
       .append(this.$windowfullScreenElem);
     // 窗口调整
     this.$windowfullScreenElem.on("click", function (e) {
@@ -329,6 +330,12 @@ DesktopWindow.prototype.operating = function(options) {
         _this.$windowElem.addClass("twin_desktop_window_full_screen");
       }
       e.stopPropagation(e);
+    });
+    // 窗口最小化
+    this.$windowMinElem.on("click", function (e) {
+      _this.onMinimize(options);
+      _this.highlight(_this.elemId, options);
+      e.stopPropagation();
     });
   }
   $windowOperatingElem
@@ -359,12 +366,7 @@ DesktopWindow.prototype.operating = function(options) {
     _this.highlight(undefined,options);
     e.stopPropagation();
   });
-  // 窗口最小化
-  this.$windowMinElem.on("click", function(e) {
-    _this.onMinimize(options);
-    _this.highlight(_this.elemId, options);
-    e.stopPropagation();
-  });
+  
   // 窗口点击
   this.$windowElem.on("click", function() {
     if (_this.zIndex !== windowZIndex) {
