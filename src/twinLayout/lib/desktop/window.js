@@ -20,25 +20,33 @@ export default function DesktopWindow(options, data) {
   }
   this.data = data;
   this.elemId = "twin_desktop_window" + windowNum;
-  let startTop = options.clientHeight * 0.1;
-  let startLeft = options.clientWidth * 0.15;
-  this.top = 40 * windowNum;
-  this.left = 40 * windowNum;
   this.windowMouseType = false;
   this.minimize = false;
   this.zIndex = windowZIndex;
-  if (options.clientHeight * 0.2 < this.top) {
-    this.top = startTop + Math.ceil(Math.random() * startTop);
+  if (options.mobile) {
+    this.top = 0;
+    this.left = 0;
+    this.right = 0;
+    this.bottom = 0;
   } else {
-    this.top += startTop;
+    let startTop = options.clientHeight * 0.1;
+    let startLeft = options.clientWidth * 0.15;
+    this.top = 40 * windowNum;
+    this.left = 40 * windowNum;
+    if (options.clientHeight * 0.2 < this.top) {
+      this.top = startTop + Math.ceil(Math.random() * startTop);
+    } else {
+      this.top += startTop;
+    }
+    if (startLeft < this.left) {
+      this.left = startLeft + Math.ceil(Math.random() * startLeft);
+    } else {
+      this.left += startLeft;
+    }
+    this.right = options.clientWidth * 0.3 - this.left;
+    this.bottom = options.clientHeight * 0.3 - 40 - this.top;
   }
-  if (startLeft < this.left) {
-    this.left = startLeft + Math.ceil(Math.random() * startLeft);
-  } else {
-    this.left += startLeft;
-  }
-  this.right = options.clientWidth * 0.3 - this.left;
-  this.bottom = options.clientHeight * 0.3 - 40 - this.top;
+  
   // 窗口
   this.$windowElem = $(
     `<div class="twin_desktop_window twin_desktop_window_active" style="top: ${this.top}px;left: ${this.left}px;right: ${this.right}px;bottom: ${this.bottom}px;z-index:${this.zIndex};"></div>`
@@ -57,20 +65,9 @@ export default function DesktopWindow(options, data) {
   this.$windowNavbarElem.append(this.$windowNavbarInfoElem);
   this.$windowElem.append(this.$windowNavbarElem).append($windowContainerElem);
   options.$loadContainer.append(this.$windowElem);
-
-  this.BottomBar(options);
-  this.drag(options);
   this.operating(options);
-
-  // 移除其他窗口状态
-  desktopWindowList.forEach((item) => {
-    item.$windowElem.removeClass("twin_desktop_window_active");
-    item.$bottomBarElem.removeClass("twin_desktop_bottom_bar_active");
-  });
-  // 添加到窗口列表
-  desktopWindowList.push({
+  let desktopWindowItem = {
     $windowElem: this.$windowElem,
-    $bottomBarElem: this.$bottomBarElem,
     elemId: this.elemId,
     minimize: this.minimize,
     zIndex: this.zIndex,
@@ -78,8 +75,22 @@ export default function DesktopWindow(options, data) {
     onShow: this.showWindow.bind(this),
     onMinimize: this.onMinimize.bind(this),
     ...data,
+  }
+  // 移除其他窗口状态
+  desktopWindowList.forEach((item) => {
+    item.$windowElem.removeClass("twin_desktop_window_active");
+    console.log(item);
+    if (!options.mobile) {
+      item.$bottomBarElem.removeClass("twin_desktop_bottom_bar_active");
+    }
   });
-
+  if (!options.mobile) {
+    this.BottomBar(options);
+    this.drag(options);
+    desktopWindowItem.$bottomBarElem = this.$bottomBarElem;
+  }
+  // 添加到窗口列表
+  desktopWindowList.push(desktopWindowItem);
   //创建完成后更新全局变量
   windowNum++;
   windowZIndex++;
@@ -103,23 +114,25 @@ DesktopWindow.prototype.removeWindow = function(options, de = true) {
     });
   // 解除绑定的事件
   this.$windowMinElem.off("click", function() {});
-  this.$windowfullScreenElem.off("click", function() {});
   this.$windowCloseElem.off("click", function() {});
   this.$windowRefreshElem.off("click", function() {});
-  this.$windowNavbarInfoElem.off("mousedown", function() {});
-  this.$windowTopElem.off("mousedown", function() {});
-  this.$windowBottomElem.off("mousedown", function() {});
-  this.$windowLeftElem.off("mousedown", function() {});
-  this.$windowRightElem.off("mousedown", function() {});
-  this.$body.off("mousemove", function() {});
-  this.$body.off("mouseup", function() {});
-  this.$bottomBarElem.off("click", function() {});
-  this.$bottomBarElem.off("mousedown", function() {});
-  this.$bottomBarElem.off("contextmenu", function() {});
+  if (!options.mobile) { 
+    this.$windowfullScreenElem.off("click", function () { });
+    this.$bottomBarElem.off("click", function () { });
+    this.$bottomBarElem.off("mousedown", function () { });
+    this.$bottomBarElem.off("contextmenu", function () { });
+    this.$windowNavbarInfoElem.off("mousedown", function () { });
+    this.$windowTopElem.off("mousedown", function () { });
+    this.$windowBottomElem.off("mousedown", function () { });
+    this.$windowLeftElem.off("mousedown", function () { });
+    this.$windowRightElem.off("mousedown", function () { });
+    this.$body.off("mousemove", function () { });
+    this.$body.off("mouseup", function () { });
+    // 底部菜单
+    this.$bottomBarElem.remove();
+  }
   // 删除当前窗口
   this.$windowElem.remove();
-  // 底部菜单
-  this.$bottomBarElem.remove();
   if (de) {
     desktopWindowList.forEach((item, index) => {
       if (this.elemId == item.elemId) {
@@ -129,7 +142,7 @@ DesktopWindow.prototype.removeWindow = function(options, de = true) {
   }
 };
 // 显示窗口
-DesktopWindow.prototype.showWindow = function() {
+DesktopWindow.prototype.showWindow = function (options) {
   if (this.zIndex !== windowZIndex) {
     this.$windowElem.css("z-index", windowZIndex);
     this.zIndex = windowZIndex;
@@ -139,21 +152,27 @@ DesktopWindow.prototype.showWindow = function() {
   desktopWindowList.forEach((item) => {
     if (item.elemId == this.elemId) {
       item.$windowElem.addClass("twin_desktop_window_active");
-      item.$bottomBarElem.addClass("twin_desktop_bottom_bar_active");
+      if (!options.mobile) { 
+        item.$bottomBarElem.addClass("twin_desktop_bottom_bar_active");
+      }
       item.minimize = false;
       item.zIndex = this.zIndex;
     } else {
       item.$windowElem.removeClass("twin_desktop_window_active");
-      item.$bottomBarElem.removeClass("twin_desktop_bottom_bar_active");
+      if (!options.mobile) { 
+        item.$bottomBarElem.removeClass("twin_desktop_bottom_bar_active");
+      }
     }
   });
   this.minimize = false;
   this.callback.onShow && this.callback.onShow();
 };
 // 最小化
-DesktopWindow.prototype.onMinimize = function() {
-  this.$bottomBarElem.removeClass("twin_desktop_bottom_bar_active");
+DesktopWindow.prototype.onMinimize = function (options) {
   this.$windowElem.removeClass("twin_desktop_window_active");
+  if (!options.mobile) {
+    this.$bottomBarElem.removeClass("twin_desktop_bottom_bar_active");
+  }
   this.$windowElem.hide();
   this.minimize = true;
   this.callback.onHide && this.callback.onHide();
@@ -225,7 +244,7 @@ DesktopWindow.prototype.BottomBar = function(options) {
                 return false;
               }
             });
-            _this.highlight();
+            _this.highlight(undefined,options);
           },
         },
         {
@@ -244,7 +263,7 @@ DesktopWindow.prototype.BottomBar = function(options) {
   });
 };
 // 下一个窗口高亮
-DesktopWindow.prototype.highlight = function(elemId) {
+DesktopWindow.prototype.highlight = function (elemId, options) {
   let len = desktopWindowList.length;
   let maxZIndex = 0;
   let maxIndex = 0;
@@ -254,7 +273,9 @@ DesktopWindow.prototype.highlight = function(elemId) {
       element.minimize = true;
     } else {
       element.$windowElem.removeClass("twin_desktop_window_active");
-      element.$bottomBarElem.removeClass("twin_desktop_bottom_bar_active");
+      if (!options.mobile) { 
+        element.$bottomBarElem.removeClass("twin_desktop_bottom_bar_active");
+      }
       if (!element.minimize) {
         if (maxZIndex == 0) {
           maxZIndex = element.zIndex;
@@ -270,7 +291,9 @@ DesktopWindow.prototype.highlight = function(elemId) {
     if (maxZIndex != 0) {
       let openItem = desktopWindowList[maxIndex];
       openItem.$windowElem.addClass("twin_desktop_window_active");
-      openItem.$bottomBarElem.addClass("twin_desktop_bottom_bar_active");
+      if (!options.mobile) {
+        openItem.$bottomBarElem.addClass("twin_desktop_bottom_bar_active");
+      }
     }
   }, 10);
 };
@@ -281,20 +304,34 @@ DesktopWindow.prototype.operating = function(options) {
   let $windowOperatingElem = $(
     `<div class="win_desktop_window_navbar_operating"></div>`
   );
-  // 窗口最小化
-  this.$windowMinElem = $(`<i class="twin_desktop_icon_min"></i>`);
-  // 窗口全屏、窗口切换
-  this.$windowfullScreenElem = $(
-    `<i class="twin_desktop_icon_window_screen"></i>`
-  );
   // 窗口刷新
   this.$windowRefreshElem = $(`<i class="twin_desktop_icon_refresh"></i>`);
+  // 窗口最小化
+  this.$windowMinElem = $(`<i class="twin_desktop_icon_min"></i>`);
   // 窗口关闭
   this.$windowCloseElem = $(`<i class="twin_desktop_icon_close"></i>`);
   $windowOperatingElem
-    .append(this.$windowRefreshElem)
-    .append(this.$windowMinElem)
-    .append(this.$windowfullScreenElem)
+    .append(this.$windowRefreshElem).append(this.$windowMinElem);
+  if (!options.mobile) {
+    // 窗口全屏、窗口切换
+    this.$windowfullScreenElem = $(
+      `<i class="twin_desktop_icon_window_screen"></i>`
+    );
+    $windowOperatingElem
+      .append(this.$windowfullScreenElem);
+    // 窗口调整
+    this.$windowfullScreenElem.on("click", function (e) {
+      if (_this.$windowElem.hasClass("twin_desktop_window_full_screen")) {
+        allowMouse = true;
+        _this.$windowElem.removeClass("twin_desktop_window_full_screen");
+      } else {
+        allowMouse = false;
+        _this.$windowElem.addClass("twin_desktop_window_full_screen");
+      }
+      e.stopPropagation(e);
+    });
+  }
+  $windowOperatingElem
     .append(this.$windowCloseElem);
   this.$windowNavbarElem.append($windowOperatingElem);
 
@@ -315,27 +352,17 @@ DesktopWindow.prototype.operating = function(options) {
     });
     e.stopPropagation();
   });
-  // 窗口调整
-  this.$windowfullScreenElem.on("click", function(e) {
-    if (_this.$windowElem.hasClass("twin_desktop_window_full_screen")) {
-      allowMouse = true;
-      _this.$windowElem.removeClass("twin_desktop_window_full_screen");
-    } else {
-      allowMouse = false;
-      _this.$windowElem.addClass("twin_desktop_window_full_screen");
-    }
-    e.stopPropagation(e);
-  });
+  
   // 窗口关闭
   this.$windowCloseElem.on("click", function(e) {
     _this.removeWindow(options);
-    _this.highlight();
+    _this.highlight(undefined,options);
     e.stopPropagation();
   });
   // 窗口最小化
   this.$windowMinElem.on("click", function(e) {
-    _this.onMinimize();
-    _this.highlight(_this.elemId);
+    _this.onMinimize(options);
+    _this.highlight(_this.elemId, options);
     e.stopPropagation();
   });
   // 窗口点击
@@ -344,18 +371,22 @@ DesktopWindow.prototype.operating = function(options) {
       _this.$windowElem.css("z-index", windowZIndex);
       _this.zIndex = windowZIndex;
       windowZIndex++;
+      desktopWindowList.forEach((item) => {
+        if (item.elemId == _this.elemId) {
+          item.$windowElem.addClass("twin_desktop_window_active");
+          if (!options.mobile) {
+            item.$bottomBarElem.addClass("twin_desktop_bottom_bar_active");
+          }
+          item.minimize = false;
+          item.zIndex = _this.zIndex;
+        } else {
+          item.$windowElem.removeClass("twin_desktop_window_active");
+          if (!options.mobile) {
+            item.$bottomBarElem.removeClass("twin_desktop_bottom_bar_active");
+          }
+        }
+      });
     }
-    desktopWindowList.forEach((item) => {
-      if (item.elemId == _this.elemId) {
-        item.$windowElem.addClass("twin_desktop_window_active");
-        item.$bottomBarElem.addClass("twin_desktop_bottom_bar_active");
-        item.minimize = false;
-        item.zIndex = _this.zIndex;
-      } else {
-        item.$windowElem.removeClass("twin_desktop_window_active");
-        item.$bottomBarElem.removeClass("twin_desktop_bottom_bar_active");
-      }
-    });
   });
 };
 // 窗口拖动
