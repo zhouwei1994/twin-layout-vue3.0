@@ -4,6 +4,7 @@ import DesktopTopBar, { DesktopGetUserInfo } from "./topBar.js";
 import DesktopApp from "./application.js";
 import "./index.scss";
 let config = {};
+let defaultBackground = "http://api.iehu.cn/Image.php?type=2";
 // 桌面背景
 function DesktopBg(options) {
   if (options.background) {
@@ -24,33 +25,43 @@ function DesktopBg(options) {
       );
     }
   } else {
-    DesktopBgContainer(options, [
-      "http://qn.kemean.cn/upload/202008/21/Image.png",
-    ]);
+    DesktopBgContainer(options, undefined);
   }
-}
+} 
 function DesktopBgContainer(options, background) {
-  let backgroundLength = background.length;
-  let index = Math.floor(Math.random() * backgroundLength);
+  let backgroundUrl = defaultBackground;
+  let backgroundLength = 2;
+  let index = 0;
+  if (background) { 
+    backgroundLength = background.length;
+    index = Math.floor(Math.random() * backgroundLength);
+    backgroundUrl = background[index];
+  }
+  
   let $elem = $(
     '<div class="twin_desktop_bg" style="background-image: url(' +
-      background[index] +
+    backgroundUrl +
       ');"></div>'
   );
   options.$loadContainer.append($elem);
-  if (!options.mobile) { 
+  if (!options.mobile && backgroundLength > 1) { 
     let $switchBgElem = $('<div class="twin_desktop_bg_switch" />');
     $elem.append($switchBgElem);
     $switchBgElem.on("click", function () {
-      let index = Math.floor(Math.random() * backgroundLength);
+      if (background) { 
+        index = Math.floor(Math.random() * backgroundLength);
+        backgroundUrl = background[index];
+      } else {
+        backgroundUrl = defaultBackground + "?t=" + new Date().getTime();
+      }
       let img = new Image();
       img.onload = function () {
         $elem.css(
           "background-image",
-          "url('" + background[index] + "');\"></div>"
+          "url('" + backgroundUrl + "');\"></div>"
         );
       };
-      img.src = background[index];
+      img.src = backgroundUrl;
     });
   }
 }
