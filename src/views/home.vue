@@ -14,7 +14,7 @@ export default {
   },
   created() {},
   mounted() {
-    let twinLayout = new twin("#twinLayout", {
+    let twinLayout = new twin({
       title: "双生桌面",
       logo: "http://qiniu.jping.ren/file/files/2020-06/15921923362629yg2lg49",
       userInfo: {

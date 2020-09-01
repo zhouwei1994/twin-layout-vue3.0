@@ -52,6 +52,10 @@
   content: "\e66f";
   font-size: 18px;
 }
+.twin_desktop_icon_switch:before {
+  content: "\e607";
+  font-size: 18px;
+}
 .twin_desktop_bg {
   position: relative;
   width: 100vw;
@@ -349,7 +353,7 @@
         background-color: rgba(255, 255, 255, 0.3);
       }
     }
-    
+
     .twin_desktop_bottom_bar_operation_menu {
       position: absolute;
       bottom: 100%;
@@ -520,22 +524,20 @@
   .twin_desktop_top_bar_left {
     display: flex;
     align-items: center;
-    padding-left: 15px;
     .twin_desktop_top_bar_logo {
       width: 24px;
       height: 24px;
+      padding-left: 15px;
     }
     .twin_desktop_top_bar_title {
       font-size: 18px;
       color: #fff;
       padding-left: 15px;
       text-shadow: 0px 0px 0px #fff, 0px 0px 2px #000, 0px 0px 4px #000;
+      padding-right: 15px;
     }
   }
-  .twin_desktop_top_bar_right {
-    display: flex;
-    align-items: center;
-    .twin_desktop_top_bar_operating {
+  .twin_desktop_top_bar_operating {
       .twin_desktop_top_bar_operating_btn {
         padding: 0 10px;
         display: flex;
@@ -585,7 +587,11 @@
           transform: scale(1);
         }
       }
-    }
+  }
+  .twin_desktop_top_bar_right {
+    display: flex;
+    align-items: center;
+
     .twin_desktop_top_bar_user_info {
       display: flex;
       align-items: center;
@@ -610,5 +616,5 @@
 .twin_desktop_position_frame {
   position: fixed;
   z-index: 999999;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 0, 0, 0.1);
 }

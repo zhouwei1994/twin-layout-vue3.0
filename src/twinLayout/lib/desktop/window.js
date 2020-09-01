@@ -126,8 +126,8 @@ DesktopWindow.prototype.removeWindow = function(options, de = true) {
     this.$windowBottomElem.off("mousedown", function () { });
     this.$windowLeftElem.off("mousedown", function () { });
     this.$windowRightElem.off("mousedown", function () { });
-    this.$body.off("mousemove", function () { });
-    this.$body.off("mouseup", function () { });
+    options.$body.off("mousemove", function () { });
+    options.$body.off("mouseup", function () { });
     // 底部菜单
     this.$bottomBarElem.remove();
   }
@@ -297,6 +297,29 @@ DesktopWindow.prototype.highlight = function (elemId, options) {
     }
   }, 10);
 };
+// 窗口点击
+DesktopWindow.prototype.windowClick = function (options) { 
+  if (this.zIndex !== windowZIndex) {
+    this.$windowElem.css("z-index", windowZIndex);
+    this.zIndex = windowZIndex;
+    windowZIndex++;
+    desktopWindowList.forEach((item) => {
+      if (item.elemId == this.elemId) {
+        item.$windowElem.addClass("twin_desktop_window_active");
+        if (!options.mobile) {
+          item.$bottomBarElem.addClass("twin_desktop_bottom_bar_active");
+        }
+        item.minimize = false;
+        item.zIndex = this.zIndex;
+      } else {
+        item.$windowElem.removeClass("twin_desktop_window_active");
+        if (!options.mobile) {
+          item.$bottomBarElem.removeClass("twin_desktop_bottom_bar_active");
+        }
+      }
+    });
+  }
+}
 // 窗口操作
 DesktopWindow.prototype.operating = function(options) {
   let _this = this;
@@ -329,6 +352,7 @@ DesktopWindow.prototype.operating = function(options) {
         allowMouse = false;
         _this.$windowElem.addClass("twin_desktop_window_full_screen");
       }
+      _this.windowClick();
       e.stopPropagation(e);
     });
     // 窗口最小化
@@ -343,7 +367,8 @@ DesktopWindow.prototype.operating = function(options) {
   this.$windowNavbarElem.append($windowOperatingElem);
 
   // 窗口刷新
-  this.$windowRefreshElem.on("click", function(e) {
+  this.$windowRefreshElem.on("click", function (e) {
+    _this.windowClick();
     options.remove &&
       options.remove({
         el: "#" + _this.elemId,
@@ -368,28 +393,7 @@ DesktopWindow.prototype.operating = function(options) {
   });
   
   // 窗口点击
-  this.$windowElem.on("click", function() {
-    if (_this.zIndex !== windowZIndex) {
-      _this.$windowElem.css("z-index", windowZIndex);
-      _this.zIndex = windowZIndex;
-      windowZIndex++;
-      desktopWindowList.forEach((item) => {
-        if (item.elemId == _this.elemId) {
-          item.$windowElem.addClass("twin_desktop_window_active");
-          if (!options.mobile) {
-            item.$bottomBarElem.addClass("twin_desktop_bottom_bar_active");
-          }
-          item.minimize = false;
-          item.zIndex = _this.zIndex;
-        } else {
-          item.$windowElem.removeClass("twin_desktop_window_active");
-          if (!options.mobile) {
-            item.$bottomBarElem.removeClass("twin_desktop_bottom_bar_active");
-          }
-        }
-      });
-    }
-  });
+  this.$windowElem.on("click", this.windowClick.bind(this));
 };
 // 窗口拖动
 DesktopWindow.prototype.drag = function(options) {
@@ -404,10 +408,9 @@ DesktopWindow.prototype.drag = function(options) {
     .append(this.$windowLeftElem)
     .append(this.$windowRightElem)
     .append(this.$windowBottomElem);
-  this.$body = $(document.body);
   _this.startClientX = 0;
   _this.startClientY = 0;
-  this.$body.on("mousemove", function(e) {
+  options.$body.on("mousemove", function(e) {
     if (!allowMouse) {
       return false;
     }
@@ -520,7 +523,7 @@ DesktopWindow.prototype.drag = function(options) {
       }
     }
   });
-  this.$body.on("mouseup", function(e) {
+  options.$body.on("mouseup", function(e) {
     if (!allowMouse) {
       return false;
     }
@@ -529,50 +532,52 @@ DesktopWindow.prototype.drag = function(options) {
       let left = 0;
       let right = 0;
       let bottom = 40;
-      if (e.clientY < 30) {
-        top = 0;
-        bottom = (options.clientHeight - 40) / 2 + 40;
-      } else if (e.clientY > options.clientHeight - 70) {
-        top = (options.clientHeight - 40) / 2;
-        bottom = 40;
-      }
-      if (e.clientX < 30) {
-        left = 0;
-        right = options.clientWidth / 2;
-      } else if (e.clientX > options.clientWidth - 30) {
-        left = options.clientWidth / 2;
-        right = 0;
-      }
-      if (top == 0 && bottom == 40 && left == 0 && right == 0) {
-        let windowTop = e.clientY - _this.startClientY;
-        let windowLeft = e.clientX - _this.startClientX;
-        _this.bottom = _this.bottom - windowTop;
-        if (_this.bottom > options.clientHeight - 40) {
-          _this.bottom = options.clientHeight - 40;
+      if (Math.abs(e.clientX - _this.startClientX) >= 5 || Math.abs(e.clientY - _this.startClientY) >= 5) {
+        if (e.clientY < 30) {
+          top = 0;
+          bottom = (options.clientHeight - 40) / 2 + 40;
+        } else if (e.clientY > options.clientHeight - 70) {
+          top = (options.clientHeight - 40) / 2;
+          bottom = 40;
         }
-        _this.top = _this.top + windowTop;
-        _this.left = _this.left + windowLeft;
-        _this.right = _this.right - windowLeft;
-        _this.$windowElem
-          .css("top", _this.top + "px")
-          .css("left", _this.left + "px")
-          .css("right", _this.right + "px")
-          .css("bottom", _this.bottom + "px");
-      } else {
-        options.$positionFrame
-          .css("top", "initial")
-          .css("bottom", "initial")
-          .css("left", "initial")
-          .css("right", "initial");
-        _this.top = top;
-        _this.bottom = bottom;
-        _this.left = left;
-        _this.right = right;
-        _this.$windowElem
-          .css("top", top + "px")
-          .css("bottom", bottom + "px")
-          .css("left", left + "px")
-          .css("right", right + "px");
+        if (e.clientX < 30) {
+          left = 0;
+          right = options.clientWidth / 2;
+        } else if (e.clientX > options.clientWidth - 30) {
+          left = options.clientWidth / 2;
+          right = 0;
+        }
+        if (top == 0 && bottom == 40 && left == 0 && right == 0) {
+          let windowTop = e.clientY - _this.startClientY;
+          let windowLeft = e.clientX - _this.startClientX;
+          _this.bottom = _this.bottom - windowTop;
+          if (_this.bottom > options.clientHeight - 40) {
+            _this.bottom = options.clientHeight - 40;
+          }
+          _this.top = _this.top + windowTop;
+          _this.left = _this.left + windowLeft;
+          _this.right = _this.right - windowLeft;
+          _this.$windowElem
+            .css("top", _this.top + "px")
+            .css("left", _this.left + "px")
+            .css("right", _this.right + "px")
+            .css("bottom", _this.bottom + "px");
+        } else {
+          options.$positionFrame
+            .css("top", "initial")
+            .css("bottom", "initial")
+            .css("left", "initial")
+            .css("right", "initial");
+          _this.top = top;
+          _this.bottom = bottom;
+          _this.left = left;
+          _this.right = right;
+          _this.$windowElem
+            .css("top", top + "px")
+            .css("bottom", bottom + "px")
+            .css("left", left + "px")
+            .css("right", right + "px");
+        }
       }
     } else if (_this.windowMouseType == "sizeTop") {
       let distance = e.clientY - _this.startClientY;
