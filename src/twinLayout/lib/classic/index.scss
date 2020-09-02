@@ -1,12 +1,11 @@
 @font-face {
-  font-family: "iconfont"; /* project id 2022990 */
-  src: url("//at.alicdn.com/t/font_2022990_wuidi2i697s.eot");
-  src: url("//at.alicdn.com/t/font_2022990_wuidi2i697s.eot?#iefix")
-      format("embedded-opentype"),
-    url("//at.alicdn.com/t/font_2022990_wuidi2i697s.woff2") format("woff2"),
-    url("//at.alicdn.com/t/font_2022990_wuidi2i697s.woff") format("woff"),
-    url("//at.alicdn.com/t/font_2022990_wuidi2i697s.ttf") format("truetype"),
-    url("//at.alicdn.com/t/font_2022990_wuidi2i697s.svg#iconfont") format("svg");
+  font-family: 'iconfont';  /* project id 2022990 */
+  src: url('//at.alicdn.com/t/font_2022990_wao8n192ld.eot');
+  src: url('//at.alicdn.com/t/font_2022990_wao8n192ld.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_2022990_wao8n192ld.woff2') format('woff2'),
+  url('//at.alicdn.com/t/font_2022990_wao8n192ld.woff') format('woff'),
+  url('//at.alicdn.com/t/font_2022990_wao8n192ld.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_2022990_wao8n192ld.svg#iconfont') format('svg');
 }
 * {
   padding: 0px;
@@ -56,32 +55,47 @@
   content: "\e607";
   font-size: 18px;
 }
+.twin_classic_icon_flat_arrow:before {
+  content: "\e618";
+}
+.twin_classic_icon_previous_page:before {
+  content: "\e6ba";
+}
+.twin_classic_icon_next_page:before {
+  content: "\e600";
+}
 // 头部导航
 .twin_classic_top_bar {
   position: fixed;
-  left: 200px;
+  left: 230px;
   top: 0;
   right: 0;
-  height: 60px;
   background-color: #FFF;
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 1px solid #f5f5f5;
   z-index: 4;
-  .twin_classic_top_bar_left {
+  -moz-user-select: none; /*火狐*/
+  -webkit-user-select: none; /*webkit浏览器*/
+  -ms-user-select: none; /*IE10*/
+  -khtml-user-select: none; /*早期浏览器*/
+  user-select: none;
+  .twin_classic_header {
     display: flex;
-    align-items: center;
-  }
-  .twin_classic_top_bar_operating {
-      .twin_classic_top_bar_operating_btn {
+    justify-content: space-between;
+    border-bottom: 1px solid #f5f5f5;
+    height: 50px;
+    .twin_classic_header_left {
+      display: flex;
+      align-items: center;
+    }
+    .twin_classic_header_operating {
+      position: relative;
+      .twin_classic_header_operating_btn {
         padding: 0 10px;
         display: flex;
         align-items: center;
         justify-content: center;
         min-width: 32px;
-        height: 60px;
+        height: 50px;
         cursor: pointer;
-        position: relative;
         outline: none;
         &:hover {
           background-color: rgba(0, 0, 0, 0.1);
@@ -101,7 +115,7 @@
           font-family: "iconfont";
           font-style: normal;
         }
-        .twin_classic_top_bar_operating_dot {
+        .twin_classic_header_operating_dot {
           position: absolute;
           left: 50%;
           margin-left: 6px;
@@ -115,31 +129,155 @@
         }
       }
       &:hover {
-        .twin_classic_top_bar_operating_menu {
+        .twin_classic_header_operating_menu {
           opacity: 1;
           transform: scale(1);
         }
       }
-  }
-  .twin_classic_top_bar_right {
-    display: flex;
-    align-items: center;
-
-    .twin_classic_top_bar_user_info {
+    }
+    .twin_classic_header_right {
       display: flex;
       align-items: center;
 
-      text-decoration: none;
-      .twin_classic_top_bar_avatar {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        flex-shrink: 0;
+      .twin_classic_header_user_info {
+        display: flex;
+        align-items: center;
+
+        text-decoration: none;
+        .twin_classic_header_avatar {
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          flex-shrink: 0;
+        }
+        .twin_classic_header_nickname {
+          padding-left: 8px;
+          font-size: 14px;
+          color: #333;
+        }
       }
-      .twin_classic_top_bar_nickname {
-        padding-left: 8px;
+    }
+  }
+  .twin_classic_nav_bar {
+    background-color: #FFF;
+    display: flex;
+    align-items: center;
+    height: 55px;
+    .twin_classic_nav_bar_container_view {
+      flex: 1;
+      width: 0;
+      overflow-x: auto;
+      .twin_classic_nav_bar_container {
+        display: flex;
+        align-items: center;
+        .twin_classic_nav_bar_container_item {
+          padding: 0 20px 0px 20px;
+          transition: all 0.4s;
+          display: flex;
+          height: 36px;
+          align-items: center;
+          border-top: 1px solid #e4e7ed;
+          border-left: 1px solid #e4e7ed;
+          border-bottom: 1px solid #e4e7ed;
+          flex-shrink: 0;
+          cursor: pointer;
+          &.twin_classic_nav_bar_container_item_active {
+             border-bottom: 1px solid transparent;
+            span {
+              color: #30C0FF;
+            }
+            i {
+              color: #30C0FF;
+            }
+          }
+          &:hover {
+            padding: 0 13px 0px 13px;
+            span {
+              color: #30C0FF;
+            }
+            i {
+              color: #30C0FF;
+              width: 17px;
+            }
+          }
+          span {
+            font-size: 14px;
+            color: #303133;
+          }
+          i {
+            color: #606266;
+            font-size: 12px;
+            font-family: "iconfont";
+            font-style: normal;
+            padding-left: 5px;
+            width: 0;
+            overflow: hidden;
+            transition: all 0.3s;
+          }
+        }
+        &::after {
+          content: "";
+          height: 36px;
+          flex: 1;
+          border-left: 1px solid #e4e7ed;
+          border-top: 1px solid transparent;
+          border-bottom: 1px solid #e4e7ed;
+        }
+      }
+    }
+    .twin_classic_nav_bar_previous_page, .twin_classic_nav_bar_next_page {
+      height: 36px;
+      padding: 0 10px;
+      border-bottom: 1px solid #e4e7ed;
+      border-top: 1px solid transparent;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+      i {
+        color: #606266;
         font-size: 14px;
-        color: #333;
+        font-family: "iconfont";
+        font-style: normal;
+      }
+    }
+    .twin_classic_nav_bar_line {
+      height: 20px;
+      width: 1px;
+      background-color: #eee;
+    }
+    .twin_classic_nav_bar_operating {
+      position: relative;
+      border-top: 1px solid transparent;
+      border-bottom: 1px solid #e4e7ed;
+      .twin_classic_nav_bar_operating_info {
+        display: flex;
+        align-items: center;
+        height: 36px;
+        padding: 0 15px;
+        cursor: pointer;
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.1);
+        }
+        span {
+          color: #606266;
+          font-size: 14px;
+        }
+        i {
+          color: #606266;
+          font-size: 14px;
+          font-family: "iconfont";
+          font-style: normal;
+          margin-left: 5px;
+        }
+      }
+      &:hover {
+        .twin_classic_header_operating_menu {
+          opacity: 1;
+          transform: scale(1);
+        }
       }
     }
   }
@@ -150,16 +288,16 @@
   top: 50%;
   background-color: #fff;
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
-  width: 160px;
+  width: 120px;
   z-index: 10000;
 }
-.twin_classic_top_bar_operating_menu {
+.twin_classic_header_operating_menu {
   position: absolute;
   top: 100%;
   right: 5px;
   background-color: #fff;
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
-  width: 160px;
+  width: 140px;
   z-index: 10000;
   transition: all 0.3s;
   transform: scale(0);
@@ -188,10 +326,10 @@
     right: 9px;
   }
 }
-.twin_classic_top_bar_operating_menu {
+.twin_classic_header_operating_menu {
   .twin_classic_click_menu_item {
     padding: 0 10px;
-    height: 40px;
+    height: 36px;
     display: flex;
     align-items: center;
     -moz-user-select: none; /*火狐*/
@@ -237,8 +375,13 @@
   left: 0;
   top: 0;
   bottom: 0;
-  width: 200px;
+  width: 230px;
   background-color: #001529;
+  -moz-user-select: none; /*火狐*/
+  -webkit-user-select: none; /*webkit浏览器*/
+  -ms-user-select: none; /*IE10*/
+  -khtml-user-select: none; /*早期浏览器*/
+  user-select: none;
   .twin_classic_left_bar_info {
     display: flex;
     align-items: center;
@@ -257,6 +400,76 @@
     }
   }
   .twin_classic_left_bar_menus {
-    
+    .twin_classic_menu {
+      transition: all 0.4s;
+      overflow: hidden;
+      transform: scaleY(0);
+      
+      &.twin_classic_menu_first {
+        transform: scaleY(1);
+      }
+    }
+    .twin_classic_menu_active {
+      background-color: #11273D;
+      .twin_classic_menu_item_right .twin_classic_icon_flat_arrow{
+        transform: rotate(180deg);
+      }
+      > .twin_classic_menu {
+        transform: scaleY(1);
+      }
+    }
+    .twin_classic_menu_item {
+      position: relative;
+      display: flex;
+      height: 50px;
+      align-items: center;
+      justify-content: space-between;
+      padding-right: 15px;
+      cursor: pointer;
+      transition: all 0.3s;
+      &:hover {
+        background-color: #20374F;
+      }
+      &.twin_classic_menu_item_active {
+        background-color: #30C0FF;
+      }
+      .twin_classic_menu_item_left {
+        display: flex;
+        align-items: center;
+        .twin_classic_menu_item_image {
+          width: 14px;
+          height: 14px;
+        }
+        .twin_classic_menu_item_icon {
+          font-family: "iconfont";
+          font-size: 14px;
+          font-style: normal;
+          color: rgba(255, 255, 255, 0.9);
+        }
+        .twin_classic_menu_item_title {
+          font-size: 14px;
+          color: rgba(255, 255, 255, 0.9);
+          margin-left: 8px;
+        }
+      }
+      .twin_classic_menu_item_right {
+        display: flex;
+        align-items: center;
+        .twin_classic_menu_item_label {
+          background-color: #ff4d4f;
+          color: rgba(255, 255, 255, 0.9);
+          font-size: 12px;
+          border-radius: 2px;
+          padding: 0px 3px;
+        }
+        .twin_classic_icon_flat_arrow {
+          font-family: "iconfont";
+          font-size: 12px;
+          font-style: normal;
+          color: rgba(255, 255, 255, 0.9);
+          transition: all 0.4s;
+        }
+      }
+    }
   }
 }

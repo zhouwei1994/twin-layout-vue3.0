@@ -54,10 +54,13 @@ export default function DesktopWindow(options, data) {
   // 窗口导航栏
   this.$windowNavbarElem = $(`<div class="twin_desktop_window_navbar"></div>`);
   // 窗口导航栏信息
-  this.$windowNavbarInfoElem = $(`<div class="win_desktop_window_navbar_info">
-        <i class="twin_desktop_window_navbar_icon" style="background-image: url(${data.icon});"></i>
-        <span class="twin_desktop_window_navbar_text">${data.title}</span>
-    </div>`);
+  let $NavbarInfoHtml = `<div class="win_desktop_window_navbar_info">`;
+  if (data.meta.iconType == "image") {
+    $NavbarInfoHtml += `<i class="twin_desktop_window_navbar_image" style="background-image: url(${data.meta.icon});"></i>`
+  } else if (data.meta.iconType == "icon") {
+    $NavbarInfoHtml += `<i class="twin_desktop_window_navbar_icon" style="font-family: ${data.meta.fontFamily};color:${data.meta.color};">${data.meta.icon}</i>`
+  }
+  this.$windowNavbarInfoElem = $($NavbarInfoHtml + `<span class="twin_desktop_window_navbar_text">${data.meta.title}</span></div>`);
   // 窗口容器
   let $windowContainerElem = $(
     `<div class="twin_desktop_window_container" id="${this.elemId}"></div>`
@@ -181,15 +184,17 @@ DesktopWindow.prototype.onMinimize = function (options) {
 DesktopWindow.prototype.BottomBar = function(options) {
   let _this = this;
   // 底部导航创建
-  this.$bottomBarElem = $(`<div class="twin_desktop_bottom_bar_item twin_desktop_bottom_bar_active" data-id="${this.elemId}">
-        <i class="twin_desktop_bottom_bar_icon" style="background-image: url(${this.data.icon});"></i>
-        <span class="twin_desktop_bottom_bar_text">${this.data.title}</span>
-    </div>`);
+  let $bottombarHtml = `<div class="twin_desktop_bottom_bar_item twin_desktop_bottom_bar_active" data-id="${this.elemId}">`;
+  if (this.data.meta.iconType == "image") {
+    $bottombarHtml += `<i class="twin_desktop_bottom_bar_image" style="background-image: url(${this.data.meta.icon});"></i>`
+  } else if (this.data.meta.iconType == "icon") {
+    $bottombarHtml += `<i class="twin_desktop_bottom_bar_icon" style="font-family: ${this.data.meta.fontFamily};color:${this.data.meta.color};">${this.data.meta.icon}</i>`
+  }
+  this.$bottomBarElem = $($bottombarHtml + `<span class="twin_desktop_bottom_bar_text">${this.data.meta.title}</span></div>`);
   options.$bottomBarContainer.append(this.$bottomBarElem);
-
   // 底部菜单拖动
   this.$bottomBarElem.on("mousedown", function(e) {
-    _this.showWindow();
+    _this.showWindow(options);
     if (!allowMouse) {
       return false;
     }
@@ -655,19 +660,19 @@ DesktopWindow.prototype.drag = function(options) {
   });
 };
 // 最小化所有窗口
-export function allMin() {
+export function allMin(options) {
   desktopWindowList.forEach((item) => {
     if (!item.minimize) {
-      item.onMinimize();
+      item.onMinimize(options);
       item.minimize = true;
     }
   });
 }
 // 展开所有窗口
-export function allShow() {
+export function allShow(options) {
   desktopWindowList.forEach((item) => {
     if (item.minimize) {
-      item.onShow();
+      item.onShow(options);
     }
   });
 }
@@ -685,12 +690,13 @@ function DesktopClickMenu(options, data) {
   });
   let top = data.clientY;
   let left = data.clientX;
-  let height = data.dataList.length * 40;
-  if (options.clientHeight - 43 < top + height) {
-    top = options.clientHeight - 43 - height;
+  let height = data.dataList.length * 36;
+  console.log(options.clientHeight);
+  if (options.clientHeight - 40 < top + height) {
+    top = options.clientHeight - 40 - height;
   }
   if (options.clientWidth < left + 190) {
-    top = options.clientHeight - 190;
+    left = options.clientHeight - 190;
   }
   options.$clickMenu
     .css("top", top + "px")

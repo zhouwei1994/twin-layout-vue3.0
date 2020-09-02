@@ -46,324 +46,115 @@ export default {
       menus: (callbcak) => {
         callbcak([
           {
-            icon:
-              "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "用户列表",
             name: "userList",
             type: "vue",
             hidden: false,
             openMore: false,
             path: "views/userList",
+            meta: {
+              icon: "&#xe617;",
+              fontFamily: "iconfont",
+              iconType: "icon",
+              title: "首页",
+              color: "red",
+              label: "最新"
+            },
           },
           {
-            icon:
-              "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "关于我们",
-            name: "home",
-            type: "vue",
-            hidden: false,
-            openMore: true,
-            path: "views/about",
+            name: "userManage",
+            meta: {
+              icon: "&#xe60a;",
+              fontFamily: "iconfont",
+              iconType: "icon",
+              title: "用户管理",
+            },
+            children: [
+              {
+                name: "about",
+                type: "vue",
+                hidden: false,
+                openMore: true,
+                path: "views/about",
+                meta: {
+                  icon: "&#xe60a;",
+                  fontFamily: "iconfont",
+                  iconType: "icon",
+                  title: "用户管理",
+                },
+              }
+            ]
           },
           {
-            icon:
-              "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "关于我们",
-            name: "home",
-            type: "vue",
-            hidden: false,
-            openMore: true,
-            path: "views/about",
-          },
-          {
-            icon:
-              "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "关于我们",
-            name: "home",
-            type: "vue",
-            hidden: false,
-            openMore: true,
-            path: "views/about",
-          },
-          {
-            icon:
-              "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "关于我们",
-            name: "home",
-            type: "vue",
-            hidden: false,
-            openMore: true,
-            path: "views/about",
-          },
-          {
-            icon:
-              "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "关于我们",
-            name: "home",
-            type: "vue",
-            hidden: false,
-            openMore: true,
-            path: "views/about",
-          },
-          {
-            icon:
-              "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "关于我们",
-            name: "home",
-            type: "vue",
-            hidden: false,
-            openMore: true,
-            path: "views/about",
-          },
-          {
-            icon:
-              "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "关于我们",
-            name: "home",
-            type: "vue",
-            hidden: false,
-            openMore: true,
-            path: "views/about",
-          },
-          {
-            icon:
-              "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "关于我们",
-            name: "home",
-            type: "vue",
-            hidden: false,
-            openMore: true,
-            path: "views/about",
-          },
-          {
-            icon:
-              "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "关于我们",
-            name: "home",
-            type: "vue",
-            hidden: false,
-            openMore: true,
-            path: "views/about",
-          },
-          {
-            icon:
-              "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "关于我们",
-            name: "home",
-            type: "vue",
-            hidden: false,
-            openMore: true,
-            path: "views/about",
-          },
-          {
-            icon:
-              "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "关于我们",
-            name: "home",
-            type: "vue",
-            hidden: false,
-            openMore: true,
-            path: "views/about",
-          },
-          {
-            icon:
-              "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "关于我们",
-            name: "home",
-            type: "vue",
-            hidden: false,
-            openMore: true,
-            path: "views/about",
-          },
-          {
-            icon:
-              "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "关于我们",
-            name: "home",
-            type: "vue",
-            hidden: false,
-            openMore: true,
-            path: "views/about",
-          },
-          {
-            icon:
-              "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "关于我们",
-            name: "home",
-            type: "vue",
-            hidden: false,
-            openMore: true,
-            path: "views/about",
-          },
-          {
-            icon:
-              "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "关于我们",
-            name: "home",
-            type: "vue",
-            hidden: false,
-            openMore: true,
-            path: "views/about",
-          },
-          {
-            icon:
-              "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "关于我们",
-            name: "home",
-            type: "vue",
-            hidden: false,
-            openMore: true,
-            path: "views/about",
-          },
-          {
-            icon:
-              "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "关于我们",
-            name: "home",
-            type: "vue",
-            hidden: false,
-            openMore: true,
-            path: "views/about",
-          },
-          {
-            icon:
-              "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "关于我们",
-            name: "home",
-            type: "vue",
-            hidden: false,
-            openMore: true,
-            path: "views/about",
-          },
-          {
-            icon:
-              "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "关于我们",
-            name: "home",
-            type: "vue",
-            hidden: false,
-            openMore: true,
-            path: "views/about",
-          },
-          {
-            icon:
-              "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "关于我们",
-            name: "home",
-            type: "vue",
-            hidden: false,
-            openMore: true,
-            path: "views/about",
-          },
-          {
-            icon:
-              "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "关于我们",
-            name: "home",
-            type: "vue",
-            hidden: false,
-            openMore: true,
-            path: "views/about",
-          },
-          {
-            icon:
-              "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "关于我们",
-            name: "home",
-            type: "vue",
-            hidden: false,
-            openMore: true,
-            path: "views/about",
-          },
-          {
-            icon:
-              "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "关于我们",
-            name: "home",
-            type: "vue",
-            hidden: false,
-            openMore: true,
-            path: "views/about",
-          },
-          {
-            icon:
-              "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "关于我们",
-            name: "home",
-            type: "vue",
-            hidden: false,
-            openMore: true,
-            path: "views/about",
-          },
-          {
-            icon:
-              "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "关于我们",
-            name: "home",
-            type: "vue",
-            hidden: false,
-            openMore: true,
-            path: "views/about",
-          },
-          {
-            icon:
-              "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "关于我们",
-            name: "home",
-            type: "vue",
-            hidden: false,
-            openMore: true,
-            path: "views/about",
-          },
-          {
-            icon:
-              "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "关于我们",
-            name: "home",
-            type: "vue",
-            hidden: false,
-            openMore: true,
-            path: "views/about",
-          },
-          {
-            icon:
-              "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "关于我们",
-            name: "home",
-            type: "vue",
-            hidden: false,
-            openMore: true,
-            path: "views/about",
-          },
-          {
-            icon:
-              "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "关于我们",
-            name: "home",
-            type: "vue",
-            hidden: false,
-            openMore: true,
-            path: "views/about",
-          },
-          {
-            icon:
-              "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "关于我们",
-            name: "home",
-            type: "vue",
-            hidden: false,
-            openMore: true,
-            path: "views/about",
-          },
-          {
-            icon:
-              "http://qiniu.jping.ren/file/files/2020-08/15981660900525rmwdk7zth.png",
-            title: "关于我们",
-            name: "home",
-            type: "vue",
-            hidden: false,
-            openMore: true,
-            path: "views/about",
+            name: "userManage",
+            meta: {
+              icon: "&#xe60a;",
+              fontFamily: "iconfont",
+              iconType: "icon",
+              title: "文章管理",
+            },
+            children: [
+              {
+                name: "about",
+                type: "vue",
+                hidden: false,
+                openMore: true,
+                path: "views/about",
+                meta: {
+                  icon: "&#xe60a;",
+                  fontFamily: "iconfont",
+                  iconType: "icon",
+                  title: "文章列表",
+                },
+              },
+              {
+                name: "userManage",
+                meta: {
+                  icon: "&#xe60a;",
+                  fontFamily: "iconfont",
+                  iconType: "icon",
+                  title: "用户管理",
+                },
+                children: [
+                  {
+                    name: "about",
+                    type: "vue",
+                    hidden: false,
+                    openMore: true,
+                    path: "views/about",
+                    meta: {
+                      icon: "&#xe60a;",
+                      fontFamily: "iconfont",
+                      iconType: "icon",
+                      title: "用户管理",
+                    },
+                  },
+                  {
+                name: "userManage",
+                meta: {
+                  icon: "&#xe60a;",
+                  fontFamily: "iconfont",
+                  iconType: "icon",
+                  title: "用户管理",
+                },
+                children: [
+                  {
+                    name: "about",
+                    type: "vue",
+                    hidden: false,
+                    openMore: true,
+                    path: "views/about",
+                    meta: {
+                      icon: "&#xe60a;",
+                      fontFamily: "iconfont",
+                      iconType: "icon",
+                      title: "用户管理",
+                    },
+                  }
+                ]
+              },
+                ]
+              },
+            ]
           },
         ]);
       },

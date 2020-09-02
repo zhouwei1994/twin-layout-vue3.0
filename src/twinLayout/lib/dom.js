@@ -496,10 +496,20 @@ $.offAll = function () {
         elem.removeEventListener(type, fn);
     });
 };
+function domRemove(id) { 
+    let domElem = document.querySelectorAll(id);
+    if (domElem.remove) {
+        domElem.remove();
+    } else {
+        var parent = domElem.parentElement;
+        parent && parent.removeChild(domElem);
+    }  
+}
 export {
     $,
     DomElement,
     querySelectorAll,
     isDOMList,
-    createElemByHTML
+    createElemByHTML,
+    domRemove
 }

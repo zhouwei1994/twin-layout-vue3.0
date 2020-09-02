@@ -1,7 +1,7 @@
-import { $ } from "./../dom.js";
+import { $, domRemove } from "./../dom.js";
 import  { allMin, allShow } from "./window.js";
 import DesktopTopBar, { DesktopGetUserInfo } from "./topBar.js";
-import DesktopApp from "./application.js";
+import DesktopAppMenus from "./application.js";
 import "./index.scss";
 let config = {};
 let defaultBackground = "http://api.iehu.cn/Image.php?type=2";
@@ -38,15 +38,17 @@ function DesktopBgContainer(options, background) {
     backgroundUrl = background[index];
   }
   
-  let $elem = $(
-    '<div class="twin_desktop_bg" style="background-image: url(' +
-    backgroundUrl +
-      ');"></div>'
+  let $bgElem = $(
+    `<div class="twin_desktop_bg" style="background-image: url(${backgroundUrl});"></div>`
   );
-  options.$loadContainer.append($elem);
+  // let $bgImageElem = $(
+  //   `<img class="twin_desktop_bg_image" src="${backgroundUrl}"/>`
+  // );
+  // $bgElem.append($bgImageElem);
+  options.$loadContainer.append($bgElem);
   if (!options.mobile && backgroundLength > 1) { 
     let $switchBgElem = $('<div class="twin_desktop_bg_switch" />');
-    $elem.append($switchBgElem);
+    $bgElem.append($switchBgElem);
     $switchBgElem.on("click", function () {
       if (background) { 
         index = Math.floor(Math.random() * backgroundLength);
@@ -56,7 +58,8 @@ function DesktopBgContainer(options, background) {
       }
       let img = new Image();
       img.onload = function () {
-        $elem.css(
+        // $bgImageElem.attr("src", backgroundUrl);
+        $bgElem.css(
           "background-image",
           "url('" + backgroundUrl + "');\"></div>"
         );
@@ -65,22 +68,6 @@ function DesktopBgContainer(options, background) {
     });
   }
 }
-function DesktopAppMenus(options) {
-  if (options.menus) {
-    if (typeof options.menus === "function") {
-      options.menus(function(data) {
-        DesktopApp(options, data);
-      });
-    } else if (Array.isArray(options.menus) && options.menus.length > 0) {
-      DesktopApp(options, options.menus);
-    } else {
-      console.error("【twin-layout】menus数据类型不正确，应为function、array");
-    }
-  } else {
-    alert("【twin-layout】请添加菜单 menus");
-  }
-}
-
 // 创建底部菜单
 function DesktopBottomBar(options) {
   let $bottomBar = $(`<div class="twin_desktop_bottom_bar"></div>`);
@@ -148,22 +135,22 @@ function DesktopBottomBar(options) {
     .append(options.$clickMenu)
     .append(options.$positionFrame);
   $bottomBarDesktopRight.on("click", () => {
-    allMin();
+    allMin(options);
   });
   $bottomBarDesktopLeft.on("click", () => {
-    allMin();
+    allMin(options);
   });
   $bottomBarDesktopMenuMinRight.on("click", () => {
-    allMin();
+    allMin(options);
   });
   $bottomBarDesktopMenuMinLeft.on("click", () => {
-    allMin();
+    allMin(options);
   });
   $bottomBarDesktopMenuShowRight.on("click", () => {
-    allShow();
+    allShow(options);
   });
   $bottomBarDesktopMenuShowLeft.on("click", () => {
-    allShow();
+    allShow(options);
   });
   
 }
@@ -171,7 +158,8 @@ function DesktopBottomBar(options) {
 function create() {
   Object.assign(this, config, this.options);
   this.$body = $(document.body);
-  this.$loadContainer = $(`<div name="twin_layout"></div>`);
+  domRemove("#twin_layout");
+  this.$loadContainer = $(`<div id="twin_layout"></div>`);
   this.$body.append(this.$loadContainer);
   // 网站宽度
   this.clientWidth = document.documentElement.clientWidth;

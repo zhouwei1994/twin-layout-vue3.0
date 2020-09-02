@@ -1,7 +1,30 @@
 import { $ } from "./../dom.js";
 import DesktopWindow from "./window.js";
+import { Object } from "core-js";
+export default function DesktopAppMenus(options) {
+    if (options.menus) {
+        if (typeof options.menus === "function") {
+            options.menus(function (data) {
+                if (Array.isArray(data) && data.length > 0) {
+                    DesktopApp(options, data);
+                } else {
+                    console.error("【twin-layout】menus返回的数据类型不正确，应为array");
+                }
+            });
+        } else if (Array.isArray(options.menus) && options.menus.length > 0) {
+            DesktopApp(options, options.menus);
+        } else {
+            console.error("【twin-layout】menus数据类型不正确，应为function、array");
+        }
+    } else {
+        alert("【twin-layout】请添加菜单 menus");
+    }
+}
+function randomColor(transparent = 1) {
+    return `rgba(${Math.ceil(Math.random() * 255)},${Math.ceil(Math.random() * 255)},${Math.ceil(Math.random() * 255)}, ${transparent})`
+}
 // 桌面图标
-export default function DesktopApp(options, res) {
+function DesktopApp(options, res) {
     let appWidth = 100;
     let appInterval = 20;
     let column = 0;
@@ -14,11 +37,13 @@ export default function DesktopApp(options, res) {
         let maxRow = parseInt(maxHeight / appWidth);
         appInterval = (maxHeight - maxRow * appWidth) / maxRow;
     }
+    
     let $appContainer = $(`<div class="twin_desktop_app_container"></div>`);
     let $appContainerView = $(`<div class="twin_desktop_app_container_view"></div>`);
     let $appContainerUl = $(`<div class="twin_desktop_app_container_ul"></div>`);
     if (res && Array.isArray(res) && res.length > 0) {
-        res.forEach((item) => {
+        let appList = DesktopAppData(res);
+        appList.forEach((item) => {
             let top = 0;
             let left = 0;
             if (options.mobile) {
@@ -28,12 +53,20 @@ export default function DesktopApp(options, res) {
                 top = appInterval * currentIndex + appWidth * currentIndex;
                 left = appWidth * column;
             }
-            let $elem = $(`<div class="twin_desktop_app_item" style="top:${top}px;left:${left}px;width:${appWidth}px;height:${appWidth}px;">
-            <i class="twin_desktop_app_item_icon" style="background-image: url(${
-                item.icon
-                });"></i>
-            <span class="twin_desktop_app_item_text">${item.title}</span>
-        </div>`);
+            item.meta = Object.assign({
+                icon: "&#xe617;",
+                fontFamily: "iconfont",
+                iconType: "icon",
+                title: "名称未定义",
+                color: randomColor()
+            }, item.meta);
+            let $elemHtml = `<div class="twin_desktop_app_item" style="top:${top}px;left:${left}px;width:${appWidth}px;height:${appWidth}px;">`;
+            if (item.meta.iconType == "image") {
+                $elemHtml += `<i class="twin_desktop_app_item_image" style="background-image: url(${ item.meta.icon });"></i>`
+            } else if (item.meta.iconType == "icon") { 
+                $elemHtml += `<i class="twin_desktop_app_item_icon" style="font-family: ${item.meta.fontFamily};color:${item.meta.color};">${item.meta.icon}</i>`
+            }
+            let $elem = $($elemHtml + `<span class="twin_desktop_app_item_text">${item.meta.title}</span></div>`);
             currentIndex += 1;
             if (options.mobile) {
                 $appContainerUl.append($elem);
@@ -102,4 +135,15 @@ export default function DesktopApp(options, res) {
     } else {
         alert("【twin-layout】至少要有一个菜单");
     }
+}
+function DesktopAppData(res) {
+    let appList = [];
+    res.forEach(function (item) {
+        if (item.children && Array.isArray(item.children)) {
+            appList = appList.concat(DesktopAppData(item.children));
+        } else {
+            appList.push(item);
+        }
+    });
+    return appList;
 }

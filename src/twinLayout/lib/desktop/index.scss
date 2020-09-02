@@ -1,12 +1,11 @@
 @font-face {
-  font-family: "iconfont"; /* project id 2022990 */
-  src: url("//at.alicdn.com/t/font_2022990_wuidi2i697s.eot");
-  src: url("//at.alicdn.com/t/font_2022990_wuidi2i697s.eot?#iefix")
-      format("embedded-opentype"),
-    url("//at.alicdn.com/t/font_2022990_wuidi2i697s.woff2") format("woff2"),
-    url("//at.alicdn.com/t/font_2022990_wuidi2i697s.woff") format("woff"),
-    url("//at.alicdn.com/t/font_2022990_wuidi2i697s.ttf") format("truetype"),
-    url("//at.alicdn.com/t/font_2022990_wuidi2i697s.svg#iconfont") format("svg");
+  font-family: 'iconfont';  /* project id 2022990 */
+  src: url('//at.alicdn.com/t/font_2022990_h8veknxuno7.eot');
+  src: url('//at.alicdn.com/t/font_2022990_h8veknxuno7.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_2022990_h8veknxuno7.woff2') format('woff2'),
+  url('//at.alicdn.com/t/font_2022990_h8veknxuno7.woff') format('woff'),
+  url('//at.alicdn.com/t/font_2022990_h8veknxuno7.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_2022990_h8veknxuno7.svg#iconfont') format('svg');
 }
 * {
   padding: 0px;
@@ -64,6 +63,12 @@
   background-repeat: no-repeat;
   background-size: cover;
   transition: all ease-in-out 0.4s;
+  // .twin_desktop_bg_image {
+  //   transition: all ease-in-out 0.4s;
+  //   width: 100vw;
+  //   height: 100vh;
+  //   object-fit: cover;
+  // }
   .twin_desktop_bg_switch {
     position: absolute;
     top: -100px;
@@ -173,12 +178,17 @@
       padding-left: 10px;
       flex: 1;
       cursor: move;
-      .twin_desktop_window_navbar_icon {
+      .twin_desktop_window_navbar_image {
         background-position: center center;
         background-repeat: no-repeat;
         background-size: cover;
         width: 20px;
         height: 20px;
+      }
+      .twin_desktop_window_navbar_icon {
+        font-size: 20px;
+        font-family: "iconfont";
+        font-style: normal;
       }
       .twin_desktop_window_navbar_text {
         margin-left: 10px;
@@ -283,6 +293,11 @@
     -khtml-user-select: none; /*早期浏览器*/
     user-select: none;
     .twin_desktop_app_item_icon {
+      font-family: "iconfont";
+      font-size: 40px;
+      font-style: normal;
+    }
+    .twin_desktop_app_item_image {
       width: 40px;
       height: 40px;
       background-position: center center;
@@ -359,9 +374,8 @@
       bottom: 100%;
       background-color: #fff;
       box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
-      width: 190px;
+      width: 120px;
       transition: all 0.3s;
-
       opacity: 0;
     }
     .twin_desktop_bottom_bar_operation_menu_left {
@@ -371,6 +385,10 @@
     .twin_desktop_bottom_bar_operation_menu_right {
       transform: translateX(100%);
       right: 0;
+    }
+    &:hover .twin_desktop_bottom_bar_operation_menu {
+      transform: translateX(0%);
+      opacity: 1;
     }
   }
 }
@@ -394,13 +412,18 @@
   &.twin_desktop_bottom_bar_active {
     background-color: rgba(255, 0, 0, 0.5);
   }
-  .twin_desktop_bottom_bar_icon {
+  .twin_desktop_bottom_bar_image {
     width: 20px;
     height: 20px;
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
     flex-shrink: 0;
+  }
+  .twin_desktop_bottom_bar_icon {
+    font-size: 20px;
+    font-family: "iconfont";
+    font-style: normal;
   }
   .twin_desktop_bottom_bar_text {
     font-size: 14px;
@@ -425,7 +448,7 @@
 .twin_desktop_top_bar_operating_menu {
   .twin_desktop_click_menu_item {
     padding: 0 10px;
-    height: 40px;
+    height: 36px;
     display: flex;
     align-items: center;
     -moz-user-select: none; /*火狐*/
@@ -471,7 +494,7 @@
   top: 50%;
   background-color: #fff;
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
-  width: 160px;
+  width: 120px;
   z-index: 10000;
 }
 .twin_desktop_top_bar_operating_menu {
@@ -480,7 +503,7 @@
   right: 5px;
   background-color: #fff;
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
-  width: 160px;
+  width: 120px;
   z-index: 10000;
   transition: all 0.3s;
   transform: scale(0);
