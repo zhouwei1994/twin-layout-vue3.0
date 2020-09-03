@@ -1,4 +1,5 @@
 import { $ } from "../dom.js";
+import ClassicWindow from "./window.js";
 export default function ClassicLeftBar(options) {
     let leftHtml = `<div class="twin_classic_left_bar"><div class="twin_classic_left_bar_info">`;
     if (options.logo) {
@@ -10,6 +11,7 @@ export default function ClassicLeftBar(options) {
     options.$leftMenuBar = $(`<div class="twin_classic_left_bar_menus"></div>`);
     $leftBarElem.append(options.$leftMenuBar);
     options.$loadContainer.append($leftBarElem);
+    options.menuBarList = [];
     ClassicAppMenus(options);
 }
 function ClassicAppMenus(options) {
@@ -31,27 +33,27 @@ function ClassicAppMenus(options) {
         alert("【twin-layout】请添加菜单 menus");
     }
 }
-let menuBarList = [];
+let defaultOpen = true;
 function ClassicMenuBar(options, container, res, level = 0, fatherId = "") {
     res.forEach((item,index) => {
-        let $menuBarElem = $(`<div class="twin_classic_menu ${level == 0 ? 'twin_classic_menu_first' : ''}" style="height:50px;"></div>`);
+        let $menuBarElem = $(`<div class="twin_classic_menu ${level == 0 ? 'twin_classic_menu_first' : ''}" style="max-height:50px;"></div>`);
         let $menuBarItemHtml = `<div class="twin_classic_menu_item" style="padding-left:${(level + 1) * 15}px"><div class="twin_classic_menu_item_left">`;
-        let metaData = Object.assign({
+        item.meta = Object.assign({
             icon: "&#xe617;",
             fontFamily: "iconfont",
             iconType: "icon",
             title: "名称未定义"
         }, item.meta);
         // if (level == 0 && options.mode == "left") { 
-        if (metaData.iconType == "image") {
-            $menuBarItemHtml += `<i class="twin_classic_menu_item_image" style="background-image: url(${metaData.icon});"></i>`
-        } else if (metaData.iconType == "icon") {
-            $menuBarItemHtml += `<i class="twin_classic_menu_item_icon" style="font-family: ${metaData.fontFamily};">${metaData.icon}</i>`
+        if (item.meta.iconType == "image") {
+            $menuBarItemHtml += `<i class="twin_classic_menu_item_image" style="background-image: url(${item.meta.icon});"></i>`
+        } else if (item.meta.iconType == "icon") {
+            $menuBarItemHtml += `<i class="twin_classic_menu_item_icon" style="font-family: ${item.meta.fontFamily};">${item.meta.icon}</i>`
         }
         // }
-        $menuBarItemHtml += `<span class="twin_classic_menu_item_title">${metaData.title}</span></div><div class="twin_classic_menu_item_right">`;
-        if (metaData.label) { 
-            $menuBarItemHtml += `<span class="twin_classic_menu_item_label">${metaData.label }</span>`;
+        $menuBarItemHtml += `<span class="twin_classic_menu_item_title">${item.meta.title}</span></div><div class="twin_classic_menu_item_right">`;
+        if (item.meta.label) { 
+            $menuBarItemHtml += `<span class="twin_classic_menu_item_label">${item.meta.label }</span>`;
         }
         container.append($menuBarElem);
         if (item.children && Array.isArray(item.children)) {
@@ -61,55 +63,67 @@ function ClassicMenuBar(options, container, res, level = 0, fatherId = "") {
         let $menuBarItemElem = $($menuBarItemHtml);
         $menuBarElem.append($menuBarItemElem);
         let elemId = level == 0 ? String(index) : fatherId + "_" + index;
+        item.level = elemId;
         if (item.children && Array.isArray(item.children)) {
             ClassicMenuBar(options, $menuBarElem, item.children, level + 1, elemId);
-            menuBarList.push({
+            options.menuBarList.push({
                 dom: $menuBarElem,
                 level: level,
                 id: elemId,
                 type: "father",
-                openState: false
+                openState: false,
+                childrenHeight: item.children.length * 50 + 50
             });
-            let childrenHeight = item.children.length * 50 + 50;
             $menuBarItemElem.on('click', function () {
-                menuBarList.forEach(item => {
-                    if (item.type == "father") { 
-                        let verification = new RegExp("^" + item.id);
-                        if (elemId == item.id && !item.openState) {
-                            item.dom.css("height", childrenHeight + "px").addClass("twin_classic_menu_active");
-                            setTimeout(() => {
-                                item.dom.css("height", "inherit");
-                            }, 400);
-                            item.openState = true;
-                        } else if (!verification.test(elemId) || elemId == item.id) {
-                            item.dom.css("height", item.dom[0].clientHeight + "px");
-                            setTimeout(() => {
-                                item.dom.css("height", "50px").removeClass("twin_classic_menu_active");
-                            }, 0);
-                            item.openState = false;
-                        }
-                    }
-                });
+                openMenuBar(options, elemId, "father");
             });
         } else {
-            menuBarList.push({
+            options.menuBarList.push({
                 dom: $menuBarItemElem,
                 level: level,
                 id: elemId,
                 type: "menu"
             });
+            if (defaultOpen) { 
+                new ClassicWindow(options, item, true);
+                defaultOpen = false;
+                openMenuBar(options, elemId);
+            }
             $menuBarItemElem.on('click', function () {
-                console.log("打开了");
-                menuBarList.forEach(item => {
-                    if (item.type == "menu") {
-                        if (elemId == item.id) { 
-                            item.dom.addClass("twin_classic_menu_item_active");
-                        } else {
-                            item.dom.removeClass("twin_classic_menu_item_active");
-                        }
-                    }
-                });
+                new ClassicWindow(options, item);
+                openMenuBar(options, elemId);
             });
+        }
+    });
+}
+export function openMenuBar(options, elemId, type = "menu") {
+    options.menuBarList.forEach(childItem => {
+        if (childItem.type == "father") {
+            let verification = new RegExp("^" + childItem.id);
+            if (verification.test(elemId)) {
+                if (!childItem.openState) { 
+                    childItem.dom.css("max-height", "3000px").addClass("twin_classic_menu_active");
+                    childItem.openState = true;
+                } else if (elemId == childItem.id){
+                    childItem.dom.css("max-height", childItem.dom[0].clientHeight + "px");
+                    setTimeout(() => {
+                        childItem.dom.css("max-height", "50px").removeClass("twin_classic_menu_active");
+                    }, 0);
+                    childItem.openState = false;
+                }
+            } else {
+                childItem.dom.css("max-height", childItem.dom[0].clientHeight + "px");
+                setTimeout(() => {
+                    childItem.dom.css("max-height", "50px").removeClass("twin_classic_menu_active");
+                }, 0);
+                childItem.openState = false;
+            }
+        } else if (childItem.type == "menu" && type != "father") {
+            if (elemId == childItem.id) {
+                childItem.dom.addClass("twin_classic_menu_item_active");
+            } else {
+                childItem.dom.removeClass("twin_classic_menu_item_active");
+            }
         }
     });
 }

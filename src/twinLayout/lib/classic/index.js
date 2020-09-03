@@ -3,6 +3,12 @@ import ClassicTopBar, { ClassicGetUserInfo } from "./topBar.js";
 import ClassicLeftBar from "./leftBar.js";
 import "./index.scss";
 let config = {};
+// 创建窗口容器
+function ClassicWindowContainer(options) { 
+  options.$windowContainer = $(`<div class="twin_classic_window_container"></div>`);
+  options.$loadContainer.append(options.$windowContainer);
+}
+
 // 创建
 function create() {
   Object.assign(this, config, this.options);
@@ -40,7 +46,9 @@ function create() {
     this.mobile = false;
   }
   ClassicTopBar(this);
+  ClassicTopBar(this);
   ClassicGetUserInfo(this);
+  ClassicWindowContainer(this);
   ClassicLeftBar(this);
   // 关闭点击菜单
   document.body.onclick = (e) => {

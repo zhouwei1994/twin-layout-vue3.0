@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'iconfont';  /* project id 2022990 */
-  src: url('//at.alicdn.com/t/font_2022990_wao8n192ld.eot');
-  src: url('//at.alicdn.com/t/font_2022990_wao8n192ld.eot?#iefix') format('embedded-opentype'),
-  url('//at.alicdn.com/t/font_2022990_wao8n192ld.woff2') format('woff2'),
-  url('//at.alicdn.com/t/font_2022990_wao8n192ld.woff') format('woff'),
-  url('//at.alicdn.com/t/font_2022990_wao8n192ld.ttf') format('truetype'),
-  url('//at.alicdn.com/t/font_2022990_wao8n192ld.svg#iconfont') format('svg');
+  src: url('//at.alicdn.com/t/font_2022990_6k0lj755mfg.eot');
+  src: url('//at.alicdn.com/t/font_2022990_6k0lj755mfg.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_2022990_6k0lj755mfg.woff2') format('woff2'),
+  url('//at.alicdn.com/t/font_2022990_6k0lj755mfg.woff') format('woff'),
+  url('//at.alicdn.com/t/font_2022990_6k0lj755mfg.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_2022990_6k0lj755mfg.svg#iconfont') format('svg');
 }
 * {
   padding: 0px;
@@ -161,44 +161,94 @@
   .twin_classic_nav_bar {
     background-color: #FFF;
     display: flex;
-    align-items: center;
-    height: 55px;
+    align-items: flex-end;
+    height: 45px;
     .twin_classic_nav_bar_container_view {
       flex: 1;
       width: 0;
-      overflow-x: auto;
+      overflow: hidden;
+      display: flex;
+      &::after {
+        content: "";
+        height: 34px;
+        flex: 1;
+        border-top: 1px solid transparent;
+        border-bottom: 1px solid #e4e7ed;
+      }
       .twin_classic_nav_bar_container {
-        display: flex;
-        align-items: center;
+        white-space: nowrap;
+        float: left;
+        position: relative;
+        transition: transform .3s;
+        
         .twin_classic_nav_bar_container_item {
-          padding: 0 20px 0px 20px;
-          transition: all 0.4s;
-          display: flex;
-          height: 36px;
-          align-items: center;
-          border-top: 1px solid #e4e7ed;
-          border-left: 1px solid #e4e7ed;
-          border-bottom: 1px solid #e4e7ed;
-          flex-shrink: 0;
+          display: inline-block;
+          position: relative;
           cursor: pointer;
+          margin-left: -7px;
+          &:first-child {
+            margin-left: 0px;
+          }
+          &::before {
+            content: "";
+            position: absolute;
+            border-top: 1px solid #e4e7ed;
+            border-left: 1px solid #e4e7ed;
+            border-right: 1px solid #e4e7ed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 40px;
+            transform: perspective(22px) rotateX(5deg);
+            transform-origin: bottom;
+            background-color: #FFF;
+            border-radius: 4px 4px 0 0;
+          }
+          
+          .twin_classic_nav_bar_container_item_content {
+            padding: 0 20px 0px 20px;
+            position: relative;
+            z-index: 2;
+            height: 34px;
+            display: flex;
+            border-top: 1px solid transparent;
+            align-items: center;
+            border-bottom: 1px solid #e4e7ed;
+            transition: all 0.3s;
+          }
           &.twin_classic_nav_bar_container_item_active {
-             border-bottom: 1px solid transparent;
+            .twin_classic_nav_bar_container_item_content {
+              border-bottom: 1px solid #FFF;
+              z-index: 3;
+            }
             span {
               color: #30C0FF;
             }
             i {
               color: #30C0FF;
+            }
+            &::before {
+              z-index: 2;
+              background-color: #FFF;
             }
           }
           &:hover {
-            padding: 0 13px 0px 13px;
+            .twin_classic_nav_bar_container_item_content {
+              padding: 0 11px 0px 11px;
+            }
+            &::before {
+              z-index: 2;
+            }
             span {
               color: #30C0FF;
             }
             i {
               color: #30C0FF;
-              width: 17px;
+              width: 18px;
             }
+          }
+          &.twin_classic_default_page .twin_classic_nav_bar_container_item_content {
+            padding: 0 20px 0px 20px;
           }
           span {
             font-size: 14px;
@@ -213,20 +263,17 @@
             width: 0;
             overflow: hidden;
             transition: all 0.3s;
+            &:hover:before {
+              content: "\e615";
+              color: #999;
+            }
           }
         }
-        &::after {
-          content: "";
-          height: 36px;
-          flex: 1;
-          border-left: 1px solid #e4e7ed;
-          border-top: 1px solid transparent;
-          border-bottom: 1px solid #e4e7ed;
-        }
+        
       }
     }
     .twin_classic_nav_bar_previous_page, .twin_classic_nav_bar_next_page {
-      height: 36px;
+      height: 34px;
       padding: 0 10px;
       border-bottom: 1px solid #e4e7ed;
       border-top: 1px solid transparent;
@@ -255,7 +302,7 @@
       .twin_classic_nav_bar_operating_info {
         display: flex;
         align-items: center;
-        height: 36px;
+        height: 34px;
         padding: 0 15px;
         cursor: pointer;
         &:hover {
@@ -427,6 +474,7 @@
       padding-right: 15px;
       cursor: pointer;
       transition: all 0.3s;
+      
       &:hover {
         background-color: #20374F;
       }
@@ -471,5 +519,16 @@
         }
       }
     }
+  }
+}
+.twin_classic_window_container {
+  padding-top: 96px;
+  padding-left: 230px;
+  width: 100%;
+  min-height: 100vh;
+  box-sizing: border-box;
+  background-color: #FFF;
+  .twin_classic_window_box {
+    padding: 10px;
   }
 }
