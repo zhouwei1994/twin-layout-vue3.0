@@ -22,6 +22,8 @@ function create() {
   this.clientHeight = document.documentElement.clientHeight;
   // 菜单模式
   this.mode = "left";
+  // 菜单折叠
+  this.menuFold = false;
   let userAgentInfo = navigator.userAgent;
   let mobileAgents = [
     "Android",
@@ -45,7 +47,6 @@ function create() {
   } else {
     this.mobile = false;
   }
-  ClassicTopBar(this);
   ClassicTopBar(this);
   ClassicGetUserInfo(this);
   ClassicWindowContainer(this);

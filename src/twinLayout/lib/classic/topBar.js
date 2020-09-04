@@ -1,9 +1,19 @@
 import { $ } from "./../dom.js";
+import { allRemove, otherRemove, leftRemove, rightRemove } from "./window.js";
 export default function ClassicTopBar(options) {
     let $topBar = $(`<div class="twin_classic_top_bar"></div>`);
     ClassicHeader(options, $topBar);
     ClassicNavBar(options, $topBar);
     options.$loadContainer.append($topBar);
+    options.$topBarMask = $(`<div class="twin_classic_mask"></div>`);
+    options.$loadContainer.append(options.$topBarMask);
+    options.$topBarMask.on('click', function () { 
+        options.$loadContainer.removeClass("twin_classic_menu_fold");
+        options.menuFold = false;
+        setTimeout(() => {
+            options.$topBarMask.hide();
+        }, 300);
+    });
 }
 // 用户信息
 export function ClassicGetUserInfo(options) {
@@ -132,6 +142,32 @@ function ClassicHeader(options, $topBar) {
     let leftHtml = `<div class="twin_classic_header_left">`;
     leftHtml += `</div>`;
     let $leftInfo = $(leftHtml);
+    let $foldElem = $(`<div class="twin_classic_header_operating">
+      <a class="twin_classic_header_operating_btn" title="折叠">
+        <i class="twin_classic_icon_fold"></i>
+      </a>
+    </div>`);
+    $foldElem.on("click", function () {
+        if (options.menuFold) { 
+            options.$loadContainer.removeClass("twin_classic_menu_fold");
+            options.menuFold = false;
+        } else {
+            options.menuFold = true;
+            options.$topBarMask.show();
+            setTimeout(function () { 
+                options.$loadContainer.addClass("twin_classic_menu_fold");
+            });
+        }
+    });
+    
+    $leftInfo.append($foldElem);
+    options.$rightInfo = $(`<div class="twin_classic_header_right"></div>`);
+    let $notice = $(`<div class="twin_classic_header_operating">
+      <a class="twin_classic_header_operating_btn" title="通知消息">
+        <i class="twin_classic_icon_notice"></i>
+        <span class="twin_classic_header_operating_dot">+99</span>
+      </a>
+    </div>`);
     let $switchLayout = $(`<div class="twin_classic_header_operating">
       <a class="twin_classic_header_operating_btn" title="切换布局">
         <i class="twin_classic_icon_switch"></i>
@@ -141,16 +177,8 @@ function ClassicHeader(options, $topBar) {
         localStorage.setItem("twinLayout", "desktop");
         window.location.reload();
     });
-    $leftInfo.append($switchLayout);
-    options.$rightInfo = $(`<div class="twin_classic_header_right"></div>`);
-    let $notice = $(`<div class="twin_classic_header_operating">
-      <a class="twin_classic_header_operating_btn" title="通知消息">
-        <i class="twin_classic_icon_notice"></i>
-        <span class="twin_classic_header_operating_dot">+99</span>
-      </a>
-    </div>`);
     options.$rightInfo
-        .append($notice);
+        .append($switchLayout).append($notice);
     $headerElem.append($leftInfo).append(options.$rightInfo);
     $topBar.append($headerElem);
     if (!options.mobile) {
@@ -206,21 +234,21 @@ function ClassicNavBar(options, $topBar) {
     let $navBarElem = $(`<div class="twin_classic_nav_bar"></div>`);
     $topBar.append($navBarElem);
     // 导航栏上一页
-    let $navBarPreviousPageElem = $(`<div class="twin_classic_nav_bar_previous_page">
+    options.$navBarPreviousPageElem = $(`<div class="twin_classic_nav_bar_previous_page">
         <i class="twin_classic_icon_previous_page"></i>
     </div>`);
-    $navBarElem.append($navBarPreviousPageElem);
+    $navBarElem.append(options.$navBarPreviousPageElem);
     // 导航栏容器
-    let $navBarContainerView = $(`<div class="twin_classic_nav_bar_container_view"></div>`);
-    $navBarElem.append($navBarContainerView);
+    options.$navBarContainerView = $(`<div class="twin_classic_nav_bar_container_view"></div>`);
+    $navBarElem.append(options.$navBarContainerView);
     // 导航栏容器
     options.$navBarContainer = $(`<div class="twin_classic_nav_bar_container"></div>`);
-    $navBarContainerView.append(options.$navBarContainer);
+    options.$navBarContainerView.append(options.$navBarContainer);
     // 导航栏下一页
-    let $navBarNextPageElem = $(`<div class="twin_classic_nav_bar_next_page">
+    options.$navBarNextPageElem = $(`<div class="twin_classic_nav_bar_next_page">
         <i class="twin_classic_icon_next_page"></i>
     </div>`);
-    $navBarElem.append($navBarNextPageElem);
+    $navBarElem.append(options.$navBarNextPageElem);
     // 更多操作
     let $navBarOperatingElem = $(`<div class="twin_classic_nav_bar_line"></div><div class="twin_classic_nav_bar_operating">
         <div class="twin_classic_nav_bar_operating_info">
@@ -238,29 +266,40 @@ function ClassicNavBar(options, $topBar) {
         <span>关闭其他</span>
     </div>`);
     $navBarOperatingContainerElem.append($navBarOperatingCloseOtherElem);
+    $navBarOperatingCloseOtherElem.on("click", function () { 
+        otherRemove(options);
+    });
     // 关闭左边
     let $navBarOperatingCloseLeftElem = $(`<div class="twin_classic_click_menu_item">
         <i class="twin_classic_icon_garden_close"></i>
         <span>关闭左边</span>
     </div>`);
     $navBarOperatingContainerElem.append($navBarOperatingCloseLeftElem);
+    $navBarOperatingCloseLeftElem.on("click", function () {
+        leftRemove(options);
+    });
     // 关闭右边
     let $navBarOperatingCloseRightElem = $(`<div class="twin_classic_click_menu_item">
         <i class="twin_classic_icon_garden_close"></i>
         <span>关闭右边</span>
     </div>`);
     $navBarOperatingContainerElem.append($navBarOperatingCloseRightElem);
+    $navBarOperatingCloseRightElem.on("click", function () {
+        rightRemove(options);
+    });
     // 关闭全部
     let $navBarOperatingCloseAllElem = $(`<div class="twin_classic_click_menu_item">
         <i class="twin_classic_icon_close"></i>
-        <span>关闭右边</span>
+        <span>关闭全部</span>
     </div>`);
     $navBarOperatingContainerElem.append($navBarOperatingCloseAllElem);
+    $navBarOperatingCloseAllElem.on("click", function () {
+        allRemove(options);
+    });
     options.navBarOffset = 0;
     // 上一页
-    $navBarPreviousPageElem.on("click", () => {
-        console.log($navBarContainerView);
-        let ViewWidth = $navBarContainerView[0].clientWidth;
+    options.$navBarPreviousPageElem.on("click", () => {
+        let ViewWidth = options.$navBarContainerView[0].clientWidth;
         if (options.navBarOffset + ViewWidth/ 2 > 0) { 
             options.navBarOffset = 0;
         } else {
@@ -269,16 +308,17 @@ function ClassicNavBar(options, $topBar) {
         options.$navBarContainer.css("transform", "translateX(" + options.navBarOffset + "px)");
     });
     // 下一页
-    $navBarNextPageElem.on("click", () => {
-        let ViewWidth = $navBarContainerView[0].clientWidth;
+    options.$navBarNextPageElem.on("click", () => {
+        let ViewWidth = options.$navBarContainerView[0].clientWidth;
         let containerWidth = options.$navBarContainer[0].clientWidth;
-        console.log(ViewWidth, containerWidth);
-        let maxNavBarOffset = containerWidth - ViewWidth;
-        if (options.navBarOffset - ViewWidth / 2 < -maxNavBarOffset) {
-            options.navBarOffset = -maxNavBarOffset;
-        } else {
-            options.navBarOffset = options.navBarOffset - ViewWidth / 2;
+        if (ViewWidth < containerWidth) { 
+            let maxNavBarOffset = containerWidth - ViewWidth;
+            if (options.navBarOffset - ViewWidth / 2 < -maxNavBarOffset) {
+                options.navBarOffset = -maxNavBarOffset;
+            } else {
+                options.navBarOffset = options.navBarOffset - ViewWidth / 2;
+            }
+            options.$navBarContainer.css("transform", "translateX(" + options.navBarOffset + "px)");
         }
-        options.$navBarContainer.css("transform", "translateX(" + options.navBarOffset + "px)");
     });
 }

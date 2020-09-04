@@ -70,7 +70,7 @@ export default {
             },
             children: [
               {
-                name: "about",
+                name: "about4",
                 type: "vue",
                 hidden: false,
                 openMore: true,
@@ -79,7 +79,7 @@ export default {
                   icon: "&#xe60a;",
                   fontFamily: "iconfont",
                   iconType: "icon",
-                  title: "用户管理",
+                  title: "用户管理4",
                 },
               }
             ]
@@ -94,7 +94,7 @@ export default {
             },
             children: [
               {
-                name: "about",
+                name: "about3",
                 type: "vue",
                 hidden: false,
                 openMore: true,
@@ -103,7 +103,7 @@ export default {
                   icon: "&#xe60a;",
                   fontFamily: "iconfont",
                   iconType: "icon",
-                  title: "文章列表",
+                  title: "文章列表3",
                 },
               },
               {
@@ -116,7 +116,7 @@ export default {
                 },
                 children: [
                   {
-                    name: "about",
+                    name: "about2",
                     type: "vue",
                     hidden: false,
                     openMore: true,
@@ -125,7 +125,7 @@ export default {
                       icon: "&#xe60a;",
                       fontFamily: "iconfont",
                       iconType: "icon",
-                      title: "用户管理",
+                      title: "用户列表2",
                     },
                   },
                   {
@@ -138,7 +138,7 @@ export default {
                 },
                 children: [
                   {
-                    name: "about",
+                    name: "about1",
                     type: "vue",
                     hidden: false,
                     openMore: true,
@@ -147,7 +147,7 @@ export default {
                       icon: "&#xe60a;",
                       fontFamily: "iconfont",
                       iconType: "icon",
-                      title: "用户管理",
+                      title: "用户列表1",
                     },
                   }
                 ]

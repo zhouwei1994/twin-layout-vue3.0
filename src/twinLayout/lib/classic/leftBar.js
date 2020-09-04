@@ -36,7 +36,7 @@ function ClassicAppMenus(options) {
 let defaultOpen = true;
 function ClassicMenuBar(options, container, res, level = 0, fatherId = "") {
     res.forEach((item,index) => {
-        let $menuBarElem = $(`<div class="twin_classic_menu ${level == 0 ? 'twin_classic_menu_first' : ''}" style="max-height:50px;"></div>`);
+        let $menuBarElem = $(`<div class="twin_classic_menu ${level == 0 ? 'twin_classic_menu_first' : ''}"></div>`);
         let $menuBarItemHtml = `<div class="twin_classic_menu_item" style="padding-left:${(level + 1) * 15}px"><div class="twin_classic_menu_item_left">`;
         item.meta = Object.assign({
             icon: "&#xe617;",
@@ -62,64 +62,65 @@ function ClassicMenuBar(options, container, res, level = 0, fatherId = "") {
         $menuBarItemHtml += `</div></div>`;
         let $menuBarItemElem = $($menuBarItemHtml);
         $menuBarElem.append($menuBarItemElem);
-        let elemId = level == 0 ? String(index) : fatherId + "_" + index;
-        item.level = elemId;
+        let levelChain = level == 0 ? String(index) : fatherId + "_" + index;
+        item.level = levelChain;
         if (item.children && Array.isArray(item.children)) {
-            ClassicMenuBar(options, $menuBarElem, item.children, level + 1, elemId);
+            ClassicMenuBar(options, $menuBarElem, item.children, level + 1, levelChain);
             options.menuBarList.push({
                 dom: $menuBarElem,
-                level: level,
-                id: elemId,
+                level: levelChain,
                 type: "father",
                 openState: false,
-                childrenHeight: item.children.length * 50 + 50
+                childrenHeight: item.children.length * 50 + 50,
+                data: item
             });
             $menuBarItemElem.on('click', function () {
-                openMenuBar(options, elemId, "father");
+                openMenuBar(options, levelChain, "father");
             });
         } else {
             options.menuBarList.push({
                 dom: $menuBarItemElem,
-                level: level,
-                id: elemId,
-                type: "menu"
+                level: levelChain,
+                type: "menu",
+                data: item
             });
             if (defaultOpen) { 
                 new ClassicWindow(options, item, true);
                 defaultOpen = false;
-                openMenuBar(options, elemId);
+                openMenuBar(options, levelChain);
             }
             $menuBarItemElem.on('click', function () {
                 new ClassicWindow(options, item);
-                openMenuBar(options, elemId);
+                openMenuBar(options, levelChain);
+                if (options.menuFold) {
+                    options.$loadContainer.removeClass("twin_classic_menu_fold");
+                    options.menuFold = false;
+                    setTimeout(() => {
+                        options.$topBarMask.hide();
+                    }, 300);
+                }
             });
         }
     });
 }
-export function openMenuBar(options, elemId, type = "menu") {
+export function openMenuBar(options, levelChain, type = "menu") {
     options.menuBarList.forEach(childItem => {
         if (childItem.type == "father") {
-            let verification = new RegExp("^" + childItem.id);
-            if (verification.test(elemId)) {
+            let verification = new RegExp("^" + childItem.level);
+            if (verification.test(levelChain)) {
                 if (!childItem.openState) { 
-                    childItem.dom.css("max-height", "3000px").addClass("twin_classic_menu_active");
+                    childItem.dom.addClass("twin_classic_menu_active");
                     childItem.openState = true;
-                } else if (elemId == childItem.id){
-                    childItem.dom.css("max-height", childItem.dom[0].clientHeight + "px");
-                    setTimeout(() => {
-                        childItem.dom.css("max-height", "50px").removeClass("twin_classic_menu_active");
-                    }, 0);
+                } else if (levelChain == childItem.level){
+                    childItem.dom.removeClass("twin_classic_menu_active");
                     childItem.openState = false;
                 }
             } else {
-                childItem.dom.css("max-height", childItem.dom[0].clientHeight + "px");
-                setTimeout(() => {
-                    childItem.dom.css("max-height", "50px").removeClass("twin_classic_menu_active");
-                }, 0);
+                childItem.dom.removeClass("twin_classic_menu_active");
                 childItem.openState = false;
             }
         } else if (childItem.type == "menu" && type != "father") {
-            if (elemId == childItem.id) {
+            if (levelChain == childItem.level) {
                 childItem.dom.addClass("twin_classic_menu_item_active");
             } else {
                 childItem.dom.removeClass("twin_classic_menu_item_active");

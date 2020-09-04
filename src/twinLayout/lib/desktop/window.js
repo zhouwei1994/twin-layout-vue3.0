@@ -245,7 +245,7 @@ DesktopWindow.prototype.BottomBar = function(options) {
               if (item.elemId == _this.elemId) {
                 return true;
               } else {
-                item.onRemove.bind(_this)(options, false);
+                item.onRemove(options, false);
                 return false;
               }
             });
