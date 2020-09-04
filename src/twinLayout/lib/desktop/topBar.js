@@ -119,9 +119,8 @@ function DesktopUserInfo(options, data) {
   </div>`);
     options.$userInfoElemMenu.append($theme);
     if (options.mobile) {
-        let userInfoElemShow = false;
-        $userInfoElem.children().get(0).on("click", (e) => {
-            if (userInfoElemShow) {
+        $userInfoElem.on("click", (e) => {
+            if (options.userInfoElemShow) {
                 options.$userInfoElemMenu.css("opacity", 0).css("transform", "scale(0)");
                 options.userInfoElemShow = false;
             } else {

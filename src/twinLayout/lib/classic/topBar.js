@@ -52,9 +52,8 @@ function ClassicUserInfo(options, data) {
   </div>`);
     options.$userInfoElemMenu.append($theme);
     if (options.mobile) {
-        let userInfoElemShow = false;
-        $userInfoElem.children().get(0).on("click", (e) => {
-            if (userInfoElemShow) {
+        $userInfoElem.on("click", (e) => {
+            if (options.userInfoElemShow) {
                 options.$userInfoElemMenu.css("opacity", 0).css("transform", "scale(0)");
                 options.userInfoElemShow = false;
             } else {
@@ -257,15 +256,28 @@ function ClassicNavBar(options, $topBar) {
         </div>
     </div>`);
     $navBarElem.append($navBarOperatingElem);
+    if (options.mobile) { 
+        $navBarOperatingElem.on("click", (e) => {
+            if (options.navBarOperatingShow) {
+                options.$navBarOperatingContainerElem.css("opacity", 0).css("transform", "scale(0)");
+                options.navBarOperatingShow = false;
+            } else {
+                options.$navBarOperatingContainerElem.css("opacity", 1).css("transform", "scale(1)");
+                options.navBarOperatingShow = true;
+            }
+            e.stopPropagation();
+            e.preventDefault();
+        });
+    }
     // 弹窗容器
-    let $navBarOperatingContainerElem = $(`<div class="twin_classic_header_operating_menu"></div>`);
-    $navBarOperatingElem.append($navBarOperatingContainerElem);
+    options.$navBarOperatingContainerElem = $(`<div class="twin_classic_header_operating_menu"></div>`);
+    $navBarOperatingElem.append(options.$navBarOperatingContainerElem);
     // 关闭其他
     let $navBarOperatingCloseOtherElem = $(`<div class="twin_classic_click_menu_item">
         <i class="twin_classic_icon_garden_close"></i>
         <span>关闭其他</span>
     </div>`);
-    $navBarOperatingContainerElem.append($navBarOperatingCloseOtherElem);
+    options.$navBarOperatingContainerElem.append($navBarOperatingCloseOtherElem);
     $navBarOperatingCloseOtherElem.on("click", function () { 
         otherRemove(options);
     });
@@ -274,7 +286,7 @@ function ClassicNavBar(options, $topBar) {
         <i class="twin_classic_icon_garden_close"></i>
         <span>关闭左边</span>
     </div>`);
-    $navBarOperatingContainerElem.append($navBarOperatingCloseLeftElem);
+    options.$navBarOperatingContainerElem.append($navBarOperatingCloseLeftElem);
     $navBarOperatingCloseLeftElem.on("click", function () {
         leftRemove(options);
     });
@@ -283,7 +295,7 @@ function ClassicNavBar(options, $topBar) {
         <i class="twin_classic_icon_garden_close"></i>
         <span>关闭右边</span>
     </div>`);
-    $navBarOperatingContainerElem.append($navBarOperatingCloseRightElem);
+    options.$navBarOperatingContainerElem.append($navBarOperatingCloseRightElem);
     $navBarOperatingCloseRightElem.on("click", function () {
         rightRemove(options);
     });
@@ -292,7 +304,7 @@ function ClassicNavBar(options, $topBar) {
         <i class="twin_classic_icon_close"></i>
         <span>关闭全部</span>
     </div>`);
-    $navBarOperatingContainerElem.append($navBarOperatingCloseAllElem);
+    options.$navBarOperatingContainerElem.append($navBarOperatingCloseAllElem);
     $navBarOperatingCloseAllElem.on("click", function () {
         allRemove(options);
     });

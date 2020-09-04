@@ -562,6 +562,28 @@
     overflow: auto;
   }
 }
+.twin_classic_mobile {
+  .twin_classic_top_bar {
+    .twin_classic_header {
+      .twin_classic_header_operating {
+        .twin_classic_header_operating_btn:hover {
+          background-color: inherit;
+        }
+      }
+    }
+    .twin_classic_nav_bar {
+      .twin_classic_nav_bar_operating_info:hover, .twin_classic_nav_bar_previous_page:hover, .twin_classic_nav_bar_next_page:hover{
+        background-color: inherit;
+      }
+      .twin_classic_nav_bar_operating:hover {
+        .twin_classic_header_operating_menu {
+          opacity: 0;
+          transform: scale(0);
+        }
+      }
+    }
+  }
+}
 @media screen and (max-width: 750px) {
   .twin_classic_top_bar {
     left: 0px;

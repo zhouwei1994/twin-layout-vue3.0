@@ -44,6 +44,7 @@ function create() {
   // 是否是手机模式
   if (this.clientWidth < 750 || mobile_flag) {
     this.mobile = true;
+    this.$loadContainer.addClass("twin_classic_mobile");
   } else {
     this.mobile = false;
   }
@@ -53,7 +54,16 @@ function create() {
   ClassicLeftBar(this);
   // 关闭点击菜单
   document.body.onclick = (e) => {
-    
+    if (this.mobile) {
+      if (this.userInfoElemShow) {
+        this.$userInfoElemMenu.css("opacity", 0).css("transform", "scale(0)");
+        this.userInfoElemShow = false;
+      }
+      if (this.navBarOperatingShow) { 
+        this.$navBarOperatingContainerElem.css("opacity", 0).css("transform", "scale(0)");
+        this.navBarOperatingShow = false;
+      }
+    }
     e.stopPropagation();
   };
 }
