@@ -1,5 +1,5 @@
 import { $, domRemove } from "./../dom.js";
-import  { allMin, allShow } from "./window.js";
+import { allMin, allShow } from "./window.js";
 import DesktopTopBar, { DesktopGetUserInfo } from "./topBar.js";
 import DesktopAppMenus from "./application.js";
 import "./index.scss";
@@ -27,17 +27,17 @@ function DesktopBg(options) {
   } else {
     DesktopBgContainer(options, undefined);
   }
-} 
+}
 function DesktopBgContainer(options, background) {
   let backgroundUrl = defaultBackground;
   let backgroundLength = 2;
   let index = 0;
-  if (background) { 
+  if (background) {
     backgroundLength = background.length;
     index = Math.floor(Math.random() * backgroundLength);
     backgroundUrl = background[index];
   }
-  
+
   let $bgElem = $(
     `<div class="twin_desktop_bg" style="background-image: url(${backgroundUrl});"></div>`
   );
@@ -46,18 +46,18 @@ function DesktopBgContainer(options, background) {
   // );
   // $bgElem.append($bgImageElem);
   options.$loadContainer.append($bgElem);
-  if (!options.mobile && backgroundLength > 1) { 
+  if (!options.mobile && backgroundLength > 1) {
     let $switchBgElem = $('<div class="twin_desktop_bg_switch" />');
     $bgElem.append($switchBgElem);
-    $switchBgElem.on("click", function () {
-      if (background) { 
+    $switchBgElem.on("click", function() {
+      if (background) {
         index = Math.floor(Math.random() * backgroundLength);
         backgroundUrl = background[index];
       } else {
         backgroundUrl = defaultBackground + "?t=" + new Date().getTime();
       }
       let img = new Image();
-      img.onload = function () {
+      img.onload = function() {
         // $bgImageElem.attr("src", backgroundUrl);
         $bgElem.css(
           "background-image",
@@ -152,7 +152,6 @@ function DesktopBottomBar(options) {
   $bottomBarDesktopMenuShowLeft.on("click", () => {
     allShow(options);
   });
-  
 }
 // 创建
 function create() {
@@ -185,7 +184,7 @@ function create() {
   // 添加背景
   DesktopBg(this);
   // 是否是手机模式
-  if (this.clientWidth < 750 || mobile_flag) {
+  if (mobile_flag) {
     this.mobile = true;
     this.$loadContainer.addClass("twin_desktop_mobile");
   } else {
@@ -201,8 +200,8 @@ function create() {
   DesktopAppMenus(this);
   // 关闭点击菜单
   document.body.onclick = (e) => {
-    if (this.mobile) { 
-      if (this.userInfoElemShow) { 
+    if (this.mobile) {
+      if (this.userInfoElemShow) {
         this.$userInfoElemMenu.css("opacity", 0).css("transform", "scale(0)");
         this.userInfoElemShow = false;
       }
