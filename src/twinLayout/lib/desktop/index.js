@@ -181,8 +181,6 @@ function create() {
       break;
     }
   }
-  // 添加背景
-  DesktopBg(this);
   // 是否是手机模式
   if (mobile_flag) {
     this.mobile = true;
@@ -192,6 +190,8 @@ function create() {
     // 添加底部菜单
     DesktopBottomBar(this);
   }
+  // 添加背景
+  DesktopBg(this);
   // 添加顶部
   DesktopTopBar(this);
   // 添加用户信息
