@@ -1,11 +1,13 @@
-import { $ , domRemove} from "./../dom.js";
+import { $, domRemove } from "./../dom.js";
 import ClassicTopBar, { ClassicGetUserInfo } from "./topBar.js";
 import ClassicLeftBar from "./leftBar.js";
-import "./index.scss";
+import "./style/index.scss";
 let config = {};
 // 创建窗口容器
-function ClassicWindowContainer(options) { 
-  options.$windowContainer = $(`<div class="twin_classic_window_container"></div>`);
+function ClassicWindowContainer(options) {
+  options.$windowContainer = $(
+    `<div class="twin_classic_window_container"></div>`
+  );
   options.$loadContainer.append(options.$windowContainer);
 }
 
@@ -14,7 +16,9 @@ function create() {
   Object.assign(this, config, this.options);
   this.$body = $(document.body);
   domRemove("#twin_layout");
-  this.$loadContainer = $(`<div id="twin_layout"></div>`);
+  this.$loadContainer = $(
+    `<div id="twin_layout" class="twin_classic_theme_green"></div>`
+  );
   this.$body.append(this.$loadContainer);
   // 网站宽度
   this.clientWidth = document.documentElement.clientWidth;
@@ -59,8 +63,10 @@ function create() {
         this.$userInfoElemMenu.css("opacity", 0).css("transform", "scale(0)");
         this.userInfoElemShow = false;
       }
-      if (this.navBarOperatingShow) { 
-        this.$navBarOperatingContainerElem.css("opacity", 0).css("transform", "scale(0)");
+      if (this.navBarOperatingShow) {
+        this.$navBarOperatingContainerElem
+          .css("opacity", 0)
+          .css("transform", "scale(0)");
         this.navBarOperatingShow = false;
       }
     }

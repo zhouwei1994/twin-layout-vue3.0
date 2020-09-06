@@ -1,0 +1,179 @@
+@import "./../../icon.scss";
+@import "./leftBar.scss";
+@import "./header.scss";
+@import "./topBar.scss";
+@import "./theme.scss";
+* {
+  padding: 0px;
+  margin: 0;
+}
+// 头部导航
+.twin_classic_top_bar {
+  position: fixed;
+  left: 230px;
+  top: 0;
+  right: 0;
+  background-color: #fff;
+  z-index: 4;
+  -moz-user-select: none; /*火狐*/
+  -webkit-user-select: none; /*webkit浏览器*/
+  -ms-user-select: none; /*IE10*/
+  -khtml-user-select: none; /*早期浏览器*/
+  user-select: none;
+  transition: all 0.3s;
+}
+.twin_classic_window_container {
+  padding-top: 96px;
+  padding-left: 230px;
+  width: 100%;
+  min-height: 100vh;
+  box-sizing: border-box;
+  background-color: #fff;
+  transition: all 0.3s;
+  .twin_classic_window_box {
+    padding: 10px;
+    overflow: auto;
+  }
+}
+.twin_classic_mobile {
+  .twin_classic_top_bar {
+    .twin_classic_header {
+      .twin_classic_header_operating {
+        .twin_classic_header_operating_btn:hover {
+          background-color: inherit;
+        }
+      }
+    }
+    .twin_classic_nav_bar {
+      .twin_classic_nav_bar_operating_info:hover,
+      .twin_classic_nav_bar_previous_page:hover,
+      .twin_classic_nav_bar_next_page:hover {
+        background-color: inherit;
+      }
+      .twin_classic_nav_bar_operating:hover {
+        .twin_classic_header_operating_menu {
+          opacity: 0;
+          transform: scale(0);
+        }
+      }
+    }
+  }
+}
+@media screen and (max-width: 750px) {
+  .twin_classic_top_bar {
+    left: 0px;
+  }
+  .twin_classic_left_bar {
+    width: 230px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 6;
+    transform: translateX(-105%);
+  }
+  .twin_classic_mask {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 5;
+    opacity: 0;
+    display: none;
+    transition: all 0.3s;
+  }
+  .twin_classic_window_container {
+    padding-left: 0px;
+  }
+  .twin_classic_menu_fold {
+    .twin_classic_left_bar {
+      transform: translateX(0%);
+    }
+    .twin_classic_mask {
+      opacity: 1;
+    }
+  }
+}
+@media screen and (min-width: 750px) {
+  .twin_classic_menu_fold {
+    .twin_classic_top_bar {
+      left: 50px;
+    }
+    .twin_classic_left_bar {
+      width: 50px;
+      overflow: visible;
+      .twin_classic_left_scroll {
+        width: 50px;
+        overflow: visible;
+      }
+      .twin_classic_left_bar_info {
+        width: 50px;
+        .twin_classic_left_bar_title {
+          display: none;
+        }
+      }
+      .twin_classic_left_bar_menus {
+        width: 50px;
+        .twin_classic_menu_first {
+          position: relative;
+          > .twin_classic_menu_item {
+            justify-content: center;
+            overflow: auto;
+            .twin_classic_menu_item_left {
+              .twin_classic_menu_item_title {
+                display: none;
+              }
+            }
+            .twin_classic_menu_item_right {
+              .twin_classic_menu_item_label,
+              .twin_layout_icon_flat_arrow {
+                display: none;
+              }
+            }
+          }
+        }
+        .twin_classic_children_menu {
+          position: fixed;
+          width: 0px;
+          background-color: #001529;
+          opacity: 0;
+          transition: all 0.3s;
+          overflow-x: hidden;
+
+          .twin_classic_children_menu_scroll {
+            width: 240px;
+            overflow-x: hidden;
+            height: 100%;
+            position: relative;
+            .twin_classic_menu {
+              width: 200px;
+              .twin_classic_menu_item {
+                height: 50px;
+                opacity: 1;
+                overflow: auto;
+                padding-left: 15px !important;
+                .twin_classic_menu_item_right .twin_layout_icon_flat_arrow {
+                  transform: rotate(0deg);
+                }
+              }
+            }
+          }
+        }
+        .twin_classic_menu:hover {
+          > .twin_classic_children_menu {
+            opacity: 1;
+            width: 200px;
+            // > .twin_classic_menu_item {
+            //   height: 50px;
+            // }
+          }
+        }
+      }
+    }
+    .twin_classic_window_container {
+      padding-left: 50px;
+    }
+  }
+}

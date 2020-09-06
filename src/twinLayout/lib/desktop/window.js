@@ -46,7 +46,7 @@ export default function DesktopWindow(options, data) {
     this.right = options.clientWidth * 0.3 - this.left;
     this.bottom = options.clientHeight * 0.3 - 40 - this.top;
   }
-  
+
   // 窗口
   this.$windowElem = $(
     `<div class="twin_desktop_window twin_desktop_window_active" style="top: ${this.top}px;left: ${this.left}px;right: ${this.right}px;bottom: ${this.bottom}px;z-index:${this.zIndex};"></div>`
@@ -56,11 +56,14 @@ export default function DesktopWindow(options, data) {
   // 窗口导航栏信息
   let $NavbarInfoHtml = `<div class="win_desktop_window_navbar_info">`;
   if (data.meta.iconType == "image") {
-    $NavbarInfoHtml += `<i class="twin_desktop_window_navbar_image" style="background-image: url(${data.meta.icon});"></i>`
+    $NavbarInfoHtml += `<i class="twin_desktop_window_navbar_image" style="background-image: url(${data.meta.icon});"></i>`;
   } else if (data.meta.iconType == "icon") {
-    $NavbarInfoHtml += `<i class="twin_desktop_window_navbar_icon" style="font-family: ${data.meta.fontFamily};color:${data.meta.color};">${data.meta.icon}</i>`
+    $NavbarInfoHtml += `<i class="twin_desktop_window_navbar_icon" style="font-family: ${data.meta.fontFamily};color:${data.meta.color};">${data.meta.icon}</i>`;
   }
-  this.$windowNavbarInfoElem = $($NavbarInfoHtml + `<span class="twin_desktop_window_navbar_text">${data.meta.title}</span></div>`);
+  this.$windowNavbarInfoElem = $(
+    $NavbarInfoHtml +
+      `<span class="twin_desktop_window_navbar_text">${data.meta.title}</span></div>`
+  );
   // 窗口容器
   let $windowContainerElem = $(
     `<div class="twin_desktop_window_container" id="${this.elemId}"></div>`
@@ -78,7 +81,7 @@ export default function DesktopWindow(options, data) {
     onShow: this.showWindow.bind(this),
     onMinimize: this.onMinimize.bind(this),
     ...data,
-  }
+  };
   // 移除其他窗口状态
   desktopWindowList.forEach((item) => {
     item.$windowElem.removeClass("twin_desktop_window_active");
@@ -118,19 +121,19 @@ DesktopWindow.prototype.removeWindow = function(options, de = true) {
   // 解除绑定的事件
   this.$windowCloseElem.off("click", function() {});
   this.$windowRefreshElem.off("click", function() {});
-  if (!options.mobile) { 
+  if (!options.mobile) {
     this.$windowMinElem.off("click", function() {});
-    this.$windowfullScreenElem.off("click", function () { });
-    this.$bottomBarElem.off("click", function () { });
-    this.$bottomBarElem.off("mousedown", function () { });
-    this.$bottomBarElem.off("contextmenu", function () { });
-    this.$windowNavbarInfoElem.off("mousedown", function () { });
-    this.$windowTopElem.off("mousedown", function () { });
-    this.$windowBottomElem.off("mousedown", function () { });
-    this.$windowLeftElem.off("mousedown", function () { });
-    this.$windowRightElem.off("mousedown", function () { });
-    options.$body.off("mousemove", function () { });
-    options.$body.off("mouseup", function () { });
+    this.$windowfullScreenElem.off("click", function() {});
+    this.$bottomBarElem.off("click", function() {});
+    this.$bottomBarElem.off("mousedown", function() {});
+    this.$bottomBarElem.off("contextmenu", function() {});
+    this.$windowNavbarInfoElem.off("mousedown", function() {});
+    this.$windowTopElem.off("mousedown", function() {});
+    this.$windowBottomElem.off("mousedown", function() {});
+    this.$windowLeftElem.off("mousedown", function() {});
+    this.$windowRightElem.off("mousedown", function() {});
+    options.$body.off("mousemove", function() {});
+    options.$body.off("mouseup", function() {});
     // 底部菜单
     this.$bottomBarElem.remove();
   }
@@ -145,7 +148,7 @@ DesktopWindow.prototype.removeWindow = function(options, de = true) {
   }
 };
 // 显示窗口
-DesktopWindow.prototype.showWindow = function (options) {
+DesktopWindow.prototype.showWindow = function(options) {
   if (this.zIndex !== windowZIndex) {
     this.$windowElem.css("z-index", windowZIndex);
     this.zIndex = windowZIndex;
@@ -155,14 +158,14 @@ DesktopWindow.prototype.showWindow = function (options) {
   desktopWindowList.forEach((item) => {
     if (item.elemId == this.elemId) {
       item.$windowElem.addClass("twin_desktop_window_active");
-      if (!options.mobile) { 
+      if (!options.mobile) {
         item.$bottomBarElem.addClass("twin_desktop_bottom_bar_active");
       }
       item.minimize = false;
       item.zIndex = this.zIndex;
     } else {
       item.$windowElem.removeClass("twin_desktop_window_active");
-      if (!options.mobile) { 
+      if (!options.mobile) {
         item.$bottomBarElem.removeClass("twin_desktop_bottom_bar_active");
       }
     }
@@ -171,7 +174,7 @@ DesktopWindow.prototype.showWindow = function (options) {
   this.callback.onShow && this.callback.onShow();
 };
 // 最小化
-DesktopWindow.prototype.onMinimize = function (options) {
+DesktopWindow.prototype.onMinimize = function(options) {
   this.$windowElem.removeClass("twin_desktop_window_active");
   if (!options.mobile) {
     this.$bottomBarElem.removeClass("twin_desktop_bottom_bar_active");
@@ -186,15 +189,17 @@ DesktopWindow.prototype.BottomBar = function(options) {
   // 底部导航创建
   let $bottombarHtml = `<div class="twin_desktop_bottom_bar_item twin_desktop_bottom_bar_active" data-id="${this.elemId}">`;
   if (this.data.meta.iconType == "image") {
-    $bottombarHtml += `<i class="twin_desktop_bottom_bar_image" style="background-image: url(${this.data.meta.icon});"></i>`
+    $bottombarHtml += `<i class="twin_desktop_bottom_bar_image" style="background-image: url(${this.data.meta.icon});"></i>`;
   } else if (this.data.meta.iconType == "icon") {
-    $bottombarHtml += `<i class="twin_desktop_bottom_bar_icon" style="font-family: ${this.data.meta.fontFamily};color:${this.data.meta.color};">${this.data.meta.icon}</i>`
+    $bottombarHtml += `<i class="twin_desktop_bottom_bar_icon" style="font-family: ${this.data.meta.fontFamily};color:${this.data.meta.color};">${this.data.meta.icon}</i>`;
   }
-  this.$bottomBarElem = $($bottombarHtml + `<span class="twin_desktop_bottom_bar_text">${this.data.meta.title}</span></div>`);
+  this.$bottomBarElem = $(
+    $bottombarHtml +
+      `<span class="twin_desktop_bottom_bar_text">${this.data.meta.title}</span></div>`
+  );
   options.$bottomBarContainer.append(this.$bottomBarElem);
   // 底部菜单拖动
   this.$bottomBarElem.on("mousedown", function(e) {
-    _this.showWindow(options);
     if (!allowMouse) {
       return false;
     }
@@ -225,7 +230,7 @@ DesktopWindow.prototype.BottomBar = function(options) {
       dataList: [
         {
           elem: `<div class="twin_desktop_click_menu_item">
-                        <i class="twin_desktop_icon_garden_close"></i>
+                        <i class="twin_layout_icon_garden_close"></i>
                         <span>关闭全部</span>   
                     </div>`,
           click: function() {
@@ -237,7 +242,7 @@ DesktopWindow.prototype.BottomBar = function(options) {
         },
         {
           elem: `<div class="twin_desktop_click_menu_item">
-                        <i class="twin_desktop_icon_garden_close"></i>
+                        <i class="twin_layout_icon_garden_close"></i>
                         <span>关闭其他</span>
                     </div>`,
           click: function() {
@@ -249,12 +254,12 @@ DesktopWindow.prototype.BottomBar = function(options) {
                 return false;
               }
             });
-            _this.highlight(undefined,options);
+            _this.highlight(undefined, options);
           },
         },
         {
           elem: `<div class="twin_desktop_click_menu_item">
-                        <i class="twin_desktop_icon_close"></i>
+                        <i class="twin_layout_icon_close"></i>
                         <span>关闭窗口</span>
                     </div>`,
           click: function() {
@@ -268,7 +273,7 @@ DesktopWindow.prototype.BottomBar = function(options) {
   });
 };
 // 下一个窗口高亮
-DesktopWindow.prototype.highlight = function (elemId, options) {
+DesktopWindow.prototype.highlight = function(elemId, options) {
   let len = desktopWindowList.length;
   let maxZIndex = 0;
   let maxIndex = 0;
@@ -278,7 +283,7 @@ DesktopWindow.prototype.highlight = function (elemId, options) {
       element.minimize = true;
     } else {
       element.$windowElem.removeClass("twin_desktop_window_active");
-      if (!options.mobile) { 
+      if (!options.mobile) {
         element.$bottomBarElem.removeClass("twin_desktop_bottom_bar_active");
       }
       if (!element.minimize) {
@@ -303,7 +308,7 @@ DesktopWindow.prototype.highlight = function (elemId, options) {
   }, 10);
 };
 // 窗口点击
-DesktopWindow.prototype.windowClick = function (options) { 
+DesktopWindow.prototype.windowClick = function(options) {
   if (this.zIndex !== windowZIndex) {
     this.$windowElem.css("z-index", windowZIndex);
     this.zIndex = windowZIndex;
@@ -324,7 +329,7 @@ DesktopWindow.prototype.windowClick = function (options) {
       }
     });
   }
-}
+};
 // 窗口操作
 DesktopWindow.prototype.operating = function(options) {
   let _this = this;
@@ -333,23 +338,23 @@ DesktopWindow.prototype.operating = function(options) {
     `<div class="win_desktop_window_navbar_operating"></div>`
   );
   // 窗口刷新
-  this.$windowRefreshElem = $(`<i class="twin_desktop_icon_refresh"></i>`);
-  
+  this.$windowRefreshElem = $(`<i class="twin_layout_icon_refresh"></i>`);
+
   // 窗口关闭
-  this.$windowCloseElem = $(`<i class="twin_desktop_icon_close"></i>`);
-  $windowOperatingElem
-    .append(this.$windowRefreshElem);
+  this.$windowCloseElem = $(`<i class="twin_layout_icon_close"></i>`);
+  $windowOperatingElem.append(this.$windowRefreshElem);
   if (!options.mobile) {
     // 窗口最小化
-    this.$windowMinElem = $(`<i class="twin_desktop_icon_min"></i>`);
+    this.$windowMinElem = $(`<i class="twin_layout_icon_min"></i>`);
     // 窗口全屏、窗口切换
     this.$windowfullScreenElem = $(
-      `<i class="twin_desktop_icon_window_screen"></i>`
+      `<i class="twin_layout_icon_window_screen"></i>`
     );
-    $windowOperatingElem.append(this.$windowMinElem)
+    $windowOperatingElem
+      .append(this.$windowMinElem)
       .append(this.$windowfullScreenElem);
     // 窗口调整
-    this.$windowfullScreenElem.on("click", function (e) {
+    this.$windowfullScreenElem.on("click", function(e) {
       if (_this.$windowElem.hasClass("twin_desktop_window_full_screen")) {
         allowMouse = true;
         _this.$windowElem.removeClass("twin_desktop_window_full_screen");
@@ -357,23 +362,22 @@ DesktopWindow.prototype.operating = function(options) {
         allowMouse = false;
         _this.$windowElem.addClass("twin_desktop_window_full_screen");
       }
-      _this.windowClick();
+      _this.windowClick(options);
       e.stopPropagation(e);
     });
     // 窗口最小化
-    this.$windowMinElem.on("click", function (e) {
+    this.$windowMinElem.on("click", function(e) {
       _this.onMinimize(options);
       _this.highlight(_this.elemId, options);
       e.stopPropagation();
     });
   }
-  $windowOperatingElem
-    .append(this.$windowCloseElem);
+  $windowOperatingElem.append(this.$windowCloseElem);
   this.$windowNavbarElem.append($windowOperatingElem);
 
   // 窗口刷新
-  this.$windowRefreshElem.on("click", function (e) {
-    _this.windowClick();
+  this.$windowRefreshElem.on("click", function(e) {
+    _this.windowClick(options);
     options.remove &&
       options.remove({
         el: "#" + _this.elemId,
@@ -389,16 +393,18 @@ DesktopWindow.prototype.operating = function(options) {
     });
     e.stopPropagation();
   });
-  
+
   // 窗口关闭
   this.$windowCloseElem.on("click", function(e) {
     _this.removeWindow(options);
-    _this.highlight(undefined,options);
+    _this.highlight(undefined, options);
     e.stopPropagation();
   });
-  
+
   // 窗口点击
-  this.$windowElem.on("click", this.windowClick.bind(this));
+  this.$windowElem.on("click", function() {
+    _this.windowClick(options);
+  });
 };
 // 窗口拖动
 DesktopWindow.prototype.drag = function(options) {
@@ -537,7 +543,10 @@ DesktopWindow.prototype.drag = function(options) {
       let left = 0;
       let right = 0;
       let bottom = 40;
-      if (Math.abs(e.clientX - _this.startClientX) >= 5 || Math.abs(e.clientY - _this.startClientY) >= 5) {
+      if (
+        Math.abs(e.clientX - _this.startClientX) >= 5 ||
+        Math.abs(e.clientY - _this.startClientY) >= 5
+      ) {
         if (e.clientY < 30) {
           top = 0;
           bottom = (options.clientHeight - 40) / 2 + 40;
@@ -613,6 +622,11 @@ DesktopWindow.prototype.drag = function(options) {
     } else if (_this.windowMouseType == "bottomBarDrag") {
       _this.$bottomBarNewElem.remove();
       _this.$bottomBarElem.css("opacity", 1);
+      let distanceX = e.clientX - _this.startClientX;
+      let distanceY = e.clientY - _this.startClientY;
+      if (Math.abs(distanceX) < 5 && Math.abs(distanceY) < 5) {
+        _this.showWindow(options);
+      }
     }
     _this.windowMouseType = false;
     _this.startClientX = 0;

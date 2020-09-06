@@ -16,10 +16,10 @@ export default {
   mounted() {
     let twinLayout = new twin({
       title: "双生桌面",
-      logo: "http://qiniu.jping.ren/file/files/2020-06/15921923362629yg2lg49",
+      logo: "http://qiniu.jping.ren/file/files/2020-08/1596255705059upw3eagr",
       userInfo: {
         avatar:
-          "http://qiniu.jping.ren/file/files/2020-06/15921923362629yg2lg49",
+          "http://qiniu.jping.ren/file/files/2020-08/1596255705059upw3eagr",
         nickname: "子不语",
       },
       userMenus: [
@@ -342,7 +342,7 @@ export default {
                           icon: "&#xe60a;",
                           fontFamily: "iconfont",
                           iconType: "icon",
-                          title: "用户列表1",
+                          title: "用户列表1用户列表1用户列表1",
                         },
                       },
                       {

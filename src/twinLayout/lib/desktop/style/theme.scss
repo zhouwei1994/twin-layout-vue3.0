@@ -1,0 +1,86 @@
+// window10主题
+.twin_desktop_style_default {
+  .twin_desktop_app_item_text {
+    color: #fff;
+    background-color: rgba($color: #000000, $alpha: 0.2);
+    border-radius: 18px;
+    line-height: 1.7em;
+    text-align: center;
+    padding: 0 5px;
+    font-size: 12px;
+    margin: 0 5px;
+    max-width: 90%;
+    min-width: 75px;
+    text-shadow: 0px 0px 0px #fff, 0px 0px 2px #000, 0px 0px 4px #000;
+  }
+  .twin_desktop_bottom_bar {
+    background-color: rgba(255, 255, 255, 0.4);
+    .twin_desktop_bottom_bar_item {
+      .twin_desktop_bottom_bar_text {
+        text-shadow: 0px 0px 0px #fff, 0px 0px 2px #000, 0px 0px 4px #000;
+      }
+    }
+  }
+  .twin_desktop_bottom_bar_active {
+    background-color: #fff;
+    .twin_desktop_bottom_bar_text {
+      text-shadow: inherit !important;
+      color: #333;
+    }
+  }
+  .twin_desktop_bottom_bar_desktop {
+    span,
+    i {
+      text-shadow: 0px 0px 0px #fff, 0px 0px 2px #000, 0px 0px 4px #000;
+    }
+  }
+  .twin_desktop_position_frame {
+    background-color: rgba(255, 255, 255, 0.6);
+  }
+  .twin_desktop_window {
+    box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.2);
+    background-image: url(../../../../assets/3.jpg);
+    .twin_desktop_window_navbar {
+      color: #fff;
+      .win_desktop_window_navbar_operating i:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+    }
+  }
+  .twin_desktop_window_active {
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
+  }
+}
+// window10主题
+.twin_desktop_style_window10 {
+  .twin_desktop_app_item_text {
+    color: #fff;
+    text-shadow: 0px 0px 0px #fff, 0px 0px 2px #000, 0px 0px 4px #000;
+  }
+  .twin_desktop_bottom_bar {
+    background-color: #0a246a;
+    .twin_desktop_bottom_bar_item {
+      .twin_desktop_bottom_bar_text {
+      }
+    }
+  }
+  .twin_desktop_bottom_bar_active {
+    background-color: #0078d7;
+  }
+  .twin_desktop_position_frame {
+    background-color: rgba(0, 120, 215, 0.3);
+  }
+  .twin_desktop_window {
+    background-color: #0078d7;
+    box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.2);
+    .twin_desktop_window_navbar {
+      color: #fff;
+      .win_desktop_window_navbar_operating i:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+    }
+  }
+  .twin_desktop_window_active {
+    box-shadow: 0 0 10px 0 rgba(0, 120, 215, 0.7);
+  }
+}

@@ -2,14 +2,16 @@ import { $ } from "../dom.js";
 import ClassicWindow from "./window.js";
 export default function ClassicLeftBar(options) {
   let $leftContainer = $(`<div class="twin_classic_left_bar"></div>`);
-  let leftHtml = `<div class="twin_classic_left_scroll"><div class="twin_classic_left_bar_info">`;
+  let leftHtml = `<div class="twin_classic_left_scroll twin_classic_theme_left_bar_background"><div class="twin_classic_left_bar_info twin_classic_theme_left_bar_background">`;
   if (options.logo) {
     leftHtml += `<img class="twin_classic_left_bar_logo" src="${options.logo}"/>`;
   }
   leftHtml += `<span class="twin_classic_left_bar_title">${options.title ||
     "双生布局"}</span>`;
   let $leftBarElem = $(leftHtml + `</div></div>`);
-  options.$leftMenuBar = $(`<div class="twin_classic_left_bar_menus"></div>`);
+  options.$leftMenuBar = $(
+    `<div class="twin_classic_left_bar_menus twin_classic_theme_left_bar_background"></div>`
+  );
   $leftBarElem.append(options.$leftMenuBar);
   $leftContainer.append($leftBarElem);
   options.$loadContainer.append($leftContainer);
@@ -43,7 +45,7 @@ function ClassicMenuBar(options, container, res, level = 0, fatherId = "") {
         level == 0 ? "twin_classic_menu_first" : ""
       }"></div>`
     );
-    let $menuBarItemHtml = `<div class="twin_classic_menu_item" style="padding-left:${(level +
+    let $menuBarItemHtml = `<div class="twin_classic_menu_item twin_classic_theme_left_bar_hover" style="padding-left:${(level +
       1) *
       15}px"><div class="twin_classic_menu_item_left">`;
     item.meta = Object.assign(
@@ -68,7 +70,7 @@ function ClassicMenuBar(options, container, res, level = 0, fatherId = "") {
     }
     container.append($menuBarElem);
     if (item.children && Array.isArray(item.children)) {
-      $menuBarItemHtml += `<span class="twin_classic_icon_flat_arrow"></span>`;
+      $menuBarItemHtml += `<span class="twin_layout_icon_flat_arrow"></span>`;
     }
     $menuBarItemHtml += `</div></div>`;
     let $menuBarItemElem = $($menuBarItemHtml);
@@ -156,30 +158,36 @@ export function openMenuBar(options, levelChain, type = "menu") {
       setTimeout(() => {
         if (isMenu) {
           if (rootLevel == childItem.level) {
-            childItem.dom.addClass("twin_classic_menu_current");
+            childItem.dom.addClass("twin_classic_theme_before");
           } else if (childItem.level.length == 1) {
-            childItem.dom.removeClass("twin_classic_menu_current");
+            childItem.dom.removeClass("twin_classic_theme_before");
           }
         }
       });
       if (verification.test(levelChain)) {
         if (!childItem.openState) {
-          childItem.dom.addClass("twin_classic_menu_active");
+          childItem.dom.addClass(
+            "twin_classic_theme_left_bar_background_active"
+          );
           childItem.openState = true;
         } else if (levelChain == childItem.level) {
-          childItem.dom.removeClass("twin_classic_menu_active");
+          childItem.dom.removeClass(
+            "twin_classic_theme_left_bar_background_active"
+          );
           childItem.openState = false;
         }
       } else {
-        childItem.dom.removeClass("twin_classic_menu_active");
+        childItem.dom.removeClass(
+          "twin_classic_theme_left_bar_background_active"
+        );
         childItem.openState = false;
       }
     } else if (childItem.type == "menu" && type != "father") {
       if (levelChain == childItem.level) {
-        childItem.dom.addClass("twin_classic_menu_item_active");
+        childItem.dom.addClass("twin_classic_theme_background");
         isMenu = true;
       } else {
-        childItem.dom.removeClass("twin_classic_menu_item_active");
+        childItem.dom.removeClass("twin_classic_theme_background");
       }
     }
   });
