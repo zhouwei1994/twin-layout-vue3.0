@@ -20,6 +20,10 @@
   .twin_desktop_app_container {
     top: 50px;
     bottom: 0px;
+    left: 0px;
+    .twin_desktop_app_container_view {
+      flex-direction: row;
+    }
     .twin_desktop_app_item {
       .twin_desktop_app_item_icon {
         font-size: 34px;

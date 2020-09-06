@@ -70,7 +70,7 @@ function ClassicMenuBar(options, container, res, level = 0, fatherId = "") {
     }
     container.append($menuBarElem);
     if (item.children && Array.isArray(item.children)) {
-      $menuBarItemHtml += `<span class="twin_layout_icon_flat_arrow"></span>`;
+      $menuBarItemHtml += `<i class="twin_layout_icon_flat_arrow"></i>`;
     }
     $menuBarItemHtml += `</div></div>`;
     let $menuBarItemElem = $($menuBarItemHtml);

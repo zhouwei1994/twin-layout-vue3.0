@@ -12,7 +12,7 @@ function create() {
   this.$body = $(document.body);
   domRemove("#twin_layout");
   this.$loadContainer = $(
-    `<div id="twin_layout" class="twin_desktop_style_default"></div>`
+    `<div id="twin_layout" class="twin_desktop_style_window10"></div>`
   );
   this.$body.append(this.$loadContainer);
   // 网站宽度

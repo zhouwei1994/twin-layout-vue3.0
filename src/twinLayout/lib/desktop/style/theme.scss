@@ -1,4 +1,4 @@
-// window10主题
+// 默认主题
 .twin_desktop_style_default {
   .twin_desktop_app_item_text {
     color: #fff;
@@ -14,7 +14,7 @@
     text-shadow: 0px 0px 0px #fff, 0px 0px 2px #000, 0px 0px 4px #000;
   }
   .twin_desktop_bottom_bar {
-    background-color: rgba(255, 255, 255, 0.4);
+    background-color: rgba(190, 190, 190, 0.3);
     .twin_desktop_bottom_bar_item {
       .twin_desktop_bottom_bar_text {
         text-shadow: 0px 0px 0px #fff, 0px 0px 2px #000, 0px 0px 4px #000;
@@ -50,6 +50,25 @@
   .twin_desktop_window_active {
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
   }
+  .twin_desktop_app_menus_background::before {
+    background-color: rgba(190, 190, 190, 0.3);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
+  }
+  .twin_desktop_app_menu_item {
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+    span {
+      color: #fff;
+      text-shadow: 0px 0px 0px #fff, 0px 0px 2px #000, 0px 0px 4px #000;
+    }
+  }
+  .twin_desktop_app_menu_active {
+    background-color: #fff;
+  }
 }
 // window10主题
 .twin_desktop_style_window10 {
@@ -82,5 +101,20 @@
   }
   .twin_desktop_window_active {
     box-shadow: 0 0 10px 0 rgba(0, 120, 215, 0.7);
+  }
+  .twin_desktop_app_menus_background::before {
+    background-color: #0a246a;
+    box-shadow: 0 0 10px 0 rgba(0, 120, 215, 0.7);
+  }
+  .twin_desktop_app_menu_item {
+    &:hover {
+      background-color: rgba(0, 120, 215, 0.3);
+    }
+    span {
+      color: #fff;
+    }
+  }
+  .twin_desktop_app_menu_active {
+    background-color: #0078d7;
   }
 }
