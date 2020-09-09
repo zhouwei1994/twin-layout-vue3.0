@@ -50,7 +50,7 @@ export default {
             type: "iframe",
             hidden: false,
             openMore: false,
-            path: "./home.html",
+            path: "https://www.baidu.com",
             meta: {
               icon: "&#xe617;",
               iconType: "icon",
@@ -73,7 +73,7 @@ export default {
             },
             children: [
               {
-                name: "about4",
+                name: "about41",
                 type: "vue",
                 hidden: false,
                 openMore: true,
@@ -86,7 +86,7 @@ export default {
                 },
               },
               {
-                name: "about4",
+                name: "about434",
                 type: "vue",
                 hidden: false,
                 openMore: true,
@@ -99,7 +99,7 @@ export default {
                 },
               },
               {
-                name: "about4",
+                name: "about44",
                 type: "vue",
                 hidden: false,
                 openMore: true,

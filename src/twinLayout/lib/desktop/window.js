@@ -71,21 +71,22 @@ export default function DesktopWindow(options, data) {
     windowContainerHtml += data.content;
   }
   let $windowContainerElem = $(windowContainerHtml + `</div>`);
-
+  this.iframeWindow = {};
   if (data.type == "iframe") { 
     let iframeId = 'twin_desktop_window_iframe' + windowNum;
     this.$windowIframeElem = $(
-      `<iframe class="twin_desktop_window_container_iframe" id="${iframeId}" name="${this.elemId }" src="${data.path }"></iframe>`
+      `<iframe class="twin_desktop_window_container_iframe" id="${iframeId}" name="${this.elemId}" src="${data.path}"></iframe>`
     );
     $windowContainerElem.append(this.$windowIframeElem);
     this.$windowIframeElem[0].onload = function () {
-      _this.contentWindow = _this.$windowIframeElem[0].contentWindow;
-      if (_this.contentWindow && _this.contentWindow.window) {
-        _this.contentWindow.window.iframeId = iframeId;
-        _this.contentWindow.window.layoutType = "desktop";
-        _this.contentWindow.window.iframeData = data;
-        _this.contentWindow.window.userInfo = options.userInfo;
-        _this.contentWindow.window.onLoad && _this.contentWindow.window.onLoad(options.userInfo);
+      let contentWindow = _this.$windowIframeElem[0].contentWindow;
+      if (contentWindow && contentWindow.window) {
+        _this.iframeWindow = contentWindow.window;
+        _this.iframeWindow.iframeId = iframeId;
+        _this.iframeWindow.layoutType = "desktop";
+        _this.iframeWindow.iframeData = data;
+        _this.iframeWindow.userInfo = options.userInfo;
+        _this.iframeWindow.onLoad && _this.iframeWindow.onLoad(options.userInfo);
       }
     }
   }
@@ -140,7 +141,11 @@ DesktopWindow.prototype.removeWindow = function(options, de = true) {
       ...this.data,
     });
   if (this.data.type == "iframe") {
-    this.contentWindow.onUnload && this.contentWindow.onUnload();
+    try {
+      this.iframeWindow.onUnload && this.iframeWindow.onUnload();
+    } catch (error) {
+      console.error("iframe存在跨域问题，无法与iframe通信");
+    }
   }
   // 解除绑定的事件
   this.$windowCloseElem.off("click", function() {});
@@ -163,7 +168,6 @@ DesktopWindow.prototype.removeWindow = function(options, de = true) {
   }
   // 删除当前窗口
   this.$windowElem.remove();
-  
   if (de) {
     desktopWindowList.forEach((item, index) => {
       if (this.elemId == item.elemId) {
@@ -198,7 +202,11 @@ DesktopWindow.prototype.showWindow = function(options) {
   this.minimize = false;
   this.callback.onShow && this.callback.onShow();
   if (this.data.type == "iframe") { 
-    this.contentWindow.onShow && this.contentWindow.onShow();
+    try {
+      this.iframeWindow.onShow && this.iframeWindow.onShow();
+    } catch (error) {
+      console.error("iframe存在跨域问题，无法与iframe通信");
+    }
   }
 };
 // 最小化
@@ -211,7 +219,11 @@ DesktopWindow.prototype.onMinimize = function(options) {
   this.minimize = true;
   this.callback.onHide && this.callback.onHide();
   if (this.data.type == "iframe") {
-    this.contentWindow.onHide && this.contentWindow.onHide();
+    try {
+      this.iframeWindow.onHide && this.iframeWindow.onHide();
+    } catch (error) {
+      console.error("iframe存在跨域问题，无法与iframe通信");
+    }
   }
 };
 // 底部菜单
