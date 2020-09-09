@@ -14,6 +14,7 @@ function create() {
   this.$loadContainer = $(
     `<div id="twin_layout" class="twin_desktop_style_default"></div>`
   );
+  this.applicationMax = 20;
   this.$body.append(this.$loadContainer);
   // 网站宽度
   this.clientWidth = document.documentElement.clientWidth;

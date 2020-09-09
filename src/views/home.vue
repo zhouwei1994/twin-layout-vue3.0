@@ -47,14 +47,17 @@ export default {
         callbcak([
           {
             name: "userList",
-            type: "vue",
+            type: "iframe",
             hidden: false,
             openMore: false,
-            path: "views/userList",
+            path: "./home.html",
             meta: {
               icon: "&#xe617;",
-              fontFamily: "iconfont",
               iconType: "icon",
+              classicIconType: "icon",
+              desktopIcon: "&#xe60a;",
+              desktopIconType: "icon",
+              fontFamily: "iconfont",
               title: "首页",
               color: "red",
               label: "最新",
@@ -74,7 +77,7 @@ export default {
                 type: "vue",
                 hidden: false,
                 openMore: true,
-                path: "views/about",
+                path: "views/userList",
                 meta: {
                   icon: "&#xe60a;",
                   fontFamily: "iconfont",
@@ -112,10 +115,10 @@ export default {
           },
           {
             name: "userList",
-            type: "vue",
+            type: "content",
             hidden: false,
             openMore: false,
-            path: "views/userList",
+            content: "你好",
             meta: {
               icon: "&#xe617;",
               fontFamily: "iconfont",
@@ -663,22 +666,23 @@ export default {
     let componentData = [];
     // 窗口关闭
     twin.prototype.remove = (data) => {
-      //注销vue组件
-      componentData[data.el].unmount();
+      if(data.type == "vue"){
+        //注销vue组件
+        componentData[data.el].unmount();
+      }
     };
     // 窗口打开
     twin.prototype.open = (data) => {
-      // data.onHide = function() {
-      //   console.log("------------345353543534");
-      // };
-      let page = require("@/" + data.path);
-      console.log(page.default);
-      data.onHide = page.default.onHide;
-      data.onShow = page.default.onShow;
-      let component = createApp(page.default);
-      // 挂载组件
-      component.use(store).mount(data.el);
-      componentData[data.el] = component;
+      if(data.type == "vue"){
+        let page = require("@/" + data.path);
+        data.onHide = page.default.onHide;
+        data.onShow = page.default.onShow;
+        let component = createApp(page.default);
+        // 挂载组件
+        component.config.globalProperties.layoutType = data.layoutType;
+        component.use(store).mount(data.el);
+        componentData[data.el] = component;
+      }
     };
     twinLayout.create();
     setTimeout(() => {

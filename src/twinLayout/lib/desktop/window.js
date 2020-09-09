@@ -10,7 +10,7 @@ export default function DesktopWindow(options, data) {
     let prohibit = false;
     desktopWindowList.forEach((item) => {
       if (item.name == data.name) {
-        item.onShow();
+        item.onShow(options);
         prohibit = true;
       }
     });
@@ -18,6 +18,7 @@ export default function DesktopWindow(options, data) {
       return;
     }
   }
+  const _this = this;
   this.data = data;
   this.elemId = "twin_desktop_window" + windowNum;
   this.windowMouseType = false;
@@ -65,9 +66,29 @@ export default function DesktopWindow(options, data) {
       `<span class="twin_desktop_window_navbar_text">${data.meta.title}</span></div>`
   );
   // 窗口容器
-  let $windowContainerElem = $(
-    `<div class="twin_desktop_window_container" id="${this.elemId}"></div>`
-  );
+  let windowContainerHtml = `<div class="twin_desktop_window_container" id="${this.elemId}">`
+  if (data.type == "content") {
+    windowContainerHtml += data.content;
+  }
+  let $windowContainerElem = $(windowContainerHtml + `</div>`);
+
+  if (data.type == "iframe") { 
+    let iframeId = 'twin_desktop_window_iframe' + windowNum;
+    this.$windowIframeElem = $(
+      `<iframe class="twin_desktop_window_container_iframe" id="${iframeId}" name="${this.elemId }" src="${data.path }"></iframe>`
+    );
+    $windowContainerElem.append(this.$windowIframeElem);
+    this.$windowIframeElem[0].onload = function () {
+      _this.contentWindow = _this.$windowIframeElem[0].contentWindow;
+      if (_this.contentWindow && _this.contentWindow.window) {
+        _this.contentWindow.window.iframeId = iframeId;
+        _this.contentWindow.window.layoutType = "desktop";
+        _this.contentWindow.window.iframeData = data;
+        _this.contentWindow.window.userInfo = options.userInfo;
+        _this.contentWindow.window.onLoad && _this.contentWindow.window.onLoad(options.userInfo);
+      }
+    }
+  }
   this.$windowNavbarElem.append(this.$windowNavbarInfoElem);
   this.$windowElem.append(this.$windowNavbarElem).append($windowContainerElem);
   options.$loadContainer.append(this.$windowElem);
@@ -85,7 +106,6 @@ export default function DesktopWindow(options, data) {
   // 移除其他窗口状态
   desktopWindowList.forEach((item) => {
     item.$windowElem.removeClass("twin_desktop_window_active");
-    console.log(item);
     if (!options.mobile) {
       item.$bottomBarElem.removeClass("twin_desktop_bottom_bar_active");
     }
@@ -105,6 +125,7 @@ export default function DesktopWindow(options, data) {
     element: this.$windowElem,
     ...data,
     onHide: undefined,
+    layoutType: "desktop"
   };
   setTimeout(() => {
     options.open(this.callback);
@@ -118,6 +139,9 @@ DesktopWindow.prototype.removeWindow = function(options, de = true) {
       element: this.$windowElem,
       ...this.data,
     });
+  if (this.data.type == "iframe") {
+    this.contentWindow.onUnload && this.contentWindow.onUnload();
+  }
   // 解除绑定的事件
   this.$windowCloseElem.off("click", function() {});
   this.$windowRefreshElem.off("click", function() {});
@@ -139,6 +163,7 @@ DesktopWindow.prototype.removeWindow = function(options, de = true) {
   }
   // 删除当前窗口
   this.$windowElem.remove();
+  
   if (de) {
     desktopWindowList.forEach((item, index) => {
       if (this.elemId == item.elemId) {
@@ -172,6 +197,9 @@ DesktopWindow.prototype.showWindow = function(options) {
   });
   this.minimize = false;
   this.callback.onShow && this.callback.onShow();
+  if (this.data.type == "iframe") { 
+    this.contentWindow.onShow && this.contentWindow.onShow();
+  }
 };
 // 最小化
 DesktopWindow.prototype.onMinimize = function(options) {
@@ -182,6 +210,9 @@ DesktopWindow.prototype.onMinimize = function(options) {
   this.$windowElem.hide();
   this.minimize = true;
   this.callback.onHide && this.callback.onHide();
+  if (this.data.type == "iframe") {
+    this.contentWindow.onHide && this.contentWindow.onHide();
+  }
 };
 // 底部菜单
 DesktopWindow.prototype.BottomBar = function(options) {
@@ -378,19 +409,29 @@ DesktopWindow.prototype.operating = function(options) {
   // 窗口刷新
   this.$windowRefreshElem.on("click", function(e) {
     _this.windowClick(options);
-    options.remove &&
-      options.remove({
-        el: "#" + _this.elemId,
-        element: _this.$windowElem,
-        ..._this.data,
+    if (_this.data.type == "iframe") {
+      let url = _this.data.path;
+      if (url.indexOf("?") != -1) { 
+        url += "&t=" + new Date().getTime();
+      } else {
+        url += "?t=" + new Date().getTime();
+      }
+      _this.$windowIframeElem.attr('src', url);
+    } else if (_this.data.type == "vue") { 
+      options.remove &&
+        options.remove({
+          el: "#" + _this.elemId,
+          element: _this.$windowElem,
+          ..._this.data,
+        });
+      setTimeout(() => {
+        options.open({
+          el: "#" + _this.elemId,
+          element: _this.$windowElem,
+          ..._this.data,
+        });
       });
-    setTimeout(() => {
-      options.open({
-        el: "#" + _this.elemId,
-        element: _this.$windowElem,
-        ..._this.data,
-      });
-    });
+    }
     e.stopPropagation();
   });
 
@@ -689,6 +730,13 @@ export function allShow(options) {
       item.onShow(options);
     }
   });
+}
+// 删除所有
+export function windowAllDelete(options) {
+  desktopWindowList.forEach((item) => {
+    item.onRemove(options, false);
+  });
+  desktopWindowList = [];
 }
 // 创建点击菜单
 function DesktopClickMenu(options, data) {

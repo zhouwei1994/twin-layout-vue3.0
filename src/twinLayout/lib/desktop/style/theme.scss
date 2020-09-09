@@ -48,7 +48,10 @@
     }
   }
   .twin_desktop_window_active {
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 10px 0 rgba(69, 69, 69, 0.3);
+    .twin_desktop_window_navbar {
+      background-color: rgba(255, 255, 255, 0);
+    }
   }
   .twin_desktop_app_menus_background::before {
     background-color: rgba(255, 255, 255, 0.5);

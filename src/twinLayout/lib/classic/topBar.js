@@ -1,5 +1,5 @@
 import { $ } from "./../dom.js";
-import { allRemove, otherRemove, leftRemove, rightRemove } from "./window.js";
+import { allRemove, otherRemove, leftRemove, rightRemove, refresh } from "./window.js";
 export default function ClassicTopBar(options) {
   let $topBar = $(`<div class="twin_classic_top_bar"></div>`);
   ClassicHeader(options, $topBar);
@@ -164,8 +164,17 @@ function ClassicHeader(options, $topBar) {
       });
     }
   });
-
   $leftInfo.append($foldElem);
+  let $switchLayout = $(`<div class="twin_classic_header_operating">
+      <a class="twin_classic_header_operating_btn" title="切换布局">
+        <i class="twin_layout_icon_switch"></i>
+      </a>
+    </div>`);
+  $switchLayout.on("click", function () {
+    localStorage.setItem("twinLayout", "desktop");
+    window.location.reload();
+  });
+  $leftInfo.append($switchLayout);
   options.$rightInfo = $(`<div class="twin_classic_header_right"></div>`);
   let $notice = $(`<div class="twin_classic_header_operating">
       <a class="twin_classic_header_operating_btn" title="通知消息">
@@ -173,16 +182,16 @@ function ClassicHeader(options, $topBar) {
         <span class="twin_classic_header_operating_dot">+99</span>
       </a>
     </div>`);
-  let $switchLayout = $(`<div class="twin_classic_header_operating">
-      <a class="twin_classic_header_operating_btn" title="切换布局">
-        <i class="twin_layout_icon_switch"></i>
+
+  let $refreshElem = $(`<div class="twin_classic_header_operating">
+      <a class="twin_classic_header_operating_btn" title="刷新">
+        <i class="twin_layout_icon_refresh"></i>
       </a>
     </div>`);
-  $switchLayout.on("click", function() {
-    localStorage.setItem("twinLayout", "desktop");
-    window.location.reload();
+  $refreshElem.on("click", function () {
+    refresh(options);
   });
-  options.$rightInfo.append($switchLayout).append($notice);
+  options.$rightInfo.append($refreshElem).append($notice);
   $headerElem.append($leftInfo).append(options.$rightInfo);
   $topBar.append($headerElem);
   if (!options.mobile) {

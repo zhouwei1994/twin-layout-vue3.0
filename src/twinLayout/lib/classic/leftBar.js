@@ -1,5 +1,5 @@
 import { $ } from "../dom.js";
-import ClassicWindow from "./window.js";
+import ClassicWindow, { windowAllDelete} from "./window.js";
 export default function ClassicLeftBar(options) {
   let $leftContainer = $(`<div class="twin_classic_left_bar"></div>`);
   let leftHtml = `<div class="twin_classic_left_scroll twin_classic_theme_left_bar_background"><div class="twin_classic_left_bar_info twin_classic_theme_left_bar_background">`;
@@ -9,6 +9,9 @@ export default function ClassicLeftBar(options) {
   leftHtml += `<span class="twin_classic_left_bar_title">${options.title ||
     "双生布局"}</span>`;
   let $leftBarElem = $(leftHtml + `</div></div>`);
+  // 如果有移除
+  windowAllDelete(options);
+  options.$leftMenuBar && options.$leftMenuBar.remove();
   options.$leftMenuBar = $(
     `<div class="twin_classic_left_bar_menus twin_classic_theme_left_bar_background"></div>`
   );
@@ -58,10 +61,10 @@ function ClassicMenuBar(options, container, res, level = 0, fatherId = "") {
       item.meta
     );
     // if (level == 0 && options.mode == "left") {
-    if (item.meta.iconType == "image") {
-      $menuBarItemHtml += `<i class="twin_classic_menu_item_image" style="background-image: url(${item.meta.icon});"></i>`;
-    } else if (item.meta.iconType == "icon") {
-      $menuBarItemHtml += `<i class="twin_classic_menu_item_icon" style="font-family: ${item.meta.fontFamily};">${item.meta.icon}</i>`;
+    if (item.meta.classicIconType == "image" || !item.meta.classicIconType && item.meta.iconType == "image") {
+      $menuBarItemHtml += `<i class="twin_classic_menu_item_image" style="background-image: url(${item.meta.classicIcon || item.meta.icon});"></i>`;
+    } else if (item.meta.classicIconType == "icon" || !item.meta.classicIconType && item.meta.iconType == "icon") {
+      $menuBarItemHtml += `<i class="twin_classic_menu_item_icon" style="font-family: ${item.meta.fontFamily};">${item.meta.classicIcon || item.meta.icon}</i>`;
     }
     // }
     $menuBarItemHtml += `<span class="twin_classic_menu_item_title">${item.meta.title}</span></div><div class="twin_classic_menu_item_right">`;

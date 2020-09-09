@@ -10,7 +10,9 @@ export default {
   name: "About",
   components: {},
   data() {
-    return {};
+    return {
+      aaa: "111111111111111111"
+    };
   },
   computed: {
     ...mapState(["userInfo"]),
@@ -25,6 +27,8 @@ export default {
     setTimeout(() => {
       this.setUserInfo({ token: 33333333333333 });
     }, 4000);
+    console.log(this);
+    console.log(this.layoutType);
   },
   methods: {
     ...mapMutations(["setUserInfo"]),

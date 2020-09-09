@@ -498,12 +498,14 @@ $.offAll = function () {
 };
 function domRemove(id) { 
     let domElem = document.querySelectorAll(id);
-    if (domElem.remove) {
-        domElem.remove();
-    } else {
-        var parent = domElem.parentElement;
-        parent && parent.removeChild(domElem);
-    }  
+    domElem.forEach(function (elem) {
+        if (elem.remove) {
+            elem.remove();
+        } else {
+            var parent = elem.parentElement;
+            parent && parent.removeChild(elem);
+        }
+    });
 }
 export {
     $,

@@ -7,6 +7,8 @@ export default function ClassicWindow(options, data, defaultPage) {
   if (windowSwitch(options, data.name, "name")) {
     return;
   }
+  const _this = this;
+  this.data = data;
   this.elemId = "twin_classic_window" + windowNum;
   this.$windowElem = $(
     `<div class="twin_classic_window_box" id="${this.elemId}"></div>`
@@ -22,6 +24,23 @@ export default function ClassicWindow(options, data, defaultPage) {
   this.$windowTopBarElem.append($windowTopBarContentElem);
 
   options.$windowContainer.append(this.$windowElem);
+  if (data.type == "iframe") {
+    let iframeId = 'twin_classic_window_iframe' + windowNum;
+    this.$windowIframeElem = $(
+      `<iframe class="twin_classic_window_container_iframe" id="${iframeId}" name="${this.elemId}" src="${data.path}"></iframe>`
+    );
+    this.$windowElem.append(this.$windowIframeElem);
+    this.$windowIframeElem[0].onload = function () {
+      _this.contentWindow = _this.$windowIframeElem[0].contentWindow;
+      if (_this.contentWindow && _this.contentWindow.window) {
+        _this.contentWindow.window.iframeId = iframeId;
+        _this.contentWindow.window.layoutType = "desktop";
+        _this.contentWindow.window.iframeData = data;
+        _this.contentWindow.window.userInfo = options.userInfo;
+        _this.contentWindow.window.onLoad && _this.contentWindow.window.onLoad(options.userInfo);
+      }
+    }
+  }
   if (!defaultPage) {
     this.$windowTopBarClose = $(
       `<i class="twin_layout_icon_garden_close"></i>`
@@ -41,6 +60,7 @@ export default function ClassicWindow(options, data, defaultPage) {
     onRemove: this.removeWindow.bind(this),
     onShow: this.showWindow.bind(this),
     onHide: this.hideWindow.bind(this),
+    onRefresh: this.refresh.bind(this),
     show: true,
     ...data,
   };
@@ -51,6 +71,7 @@ export default function ClassicWindow(options, data, defaultPage) {
     element: this.$windowElem,
     ...data,
     onHide: undefined,
+    layoutType: "classic"
   };
   setTimeout(() => {
     options.open(this.callback);
@@ -71,6 +92,9 @@ ClassicWindow.prototype.removeWindow = function(options, de = true) {
       element: this.$windowElem,
       ...this.data,
     });
+  if (this.data.type == "iframe") {
+    this.contentWindow.onUnload && this.contentWindow.onUnload();
+  }
   this.$windowTopBarElem.off("click", function() {});
   this.$windowTopBarClose.off("click", function() {});
   this.$windowElem.remove();
@@ -88,12 +112,18 @@ ClassicWindow.prototype.showWindow = function() {
   this.$windowElem.show();
   this.$windowTopBarElem.addClass("twin_classic_theme_color");
   this.callback.onShow && this.callback.onShow();
+  if (this.data.type == "iframe") {
+    this.contentWindow.onShow && this.contentWindow.onShow();
+  }
 };
 // 隐藏窗口
 ClassicWindow.prototype.hideWindow = function() {
   this.$windowElem.hide();
   this.$windowTopBarElem.removeClass("twin_classic_theme_color");
   this.callback.onHide && this.callback.onHide();
+  if (this.data.type == "iframe") {
+    this.contentWindow.onHide && this.contentWindow.onHide();
+  }
 };
 // 插件下一个窗口并显示
 ClassicWindow.prototype.nextWindowShow = function(options) {
@@ -105,6 +135,32 @@ ClassicWindow.prototype.nextWindowShow = function(options) {
     openMenuBar(options, element.level);
     centerWindow(options, element.$windowTopBarElem);
     break;
+  }
+};
+// 刷新
+ClassicWindow.prototype.refresh = function (options) {
+  if (this.data.type == "iframe") {
+    let url = this.data.path;
+    if (url.indexOf("?") != -1) {
+      url += "&t=" + new Date().getTime();
+    } else {
+      url += "?t=" + new Date().getTime();
+    }
+    this.$windowIframeElem.attr('src', url);
+  } else if (this.data.type == "vue") {
+    options.remove &&
+      options.remove({
+        el: "#" + this.elemId,
+        element: this.$windowElem,
+        ...this.data,
+      });
+    setTimeout(() => {
+      options.open({
+        el: "#" + this.elemId,
+        element: this.$windowElem,
+        ...this.data,
+      });
+    });
   }
 };
 // 当前标签在最中间
@@ -170,6 +226,15 @@ export function allRemove(options) {
   options.navBarOffset = 0;
   options.$navBarContainer.css("transform", "translateX(0px)");
 }
+// 删除所有窗口
+export function windowAllDelete(options) {
+  classicWindowList = classicWindowList.filter((item) => {
+    item.onRemove(options, false);
+    return false;
+  });
+  options.navBarOffset = 0;
+  options.$navBarContainer.css("transform", "translateX(0px)");
+}
 // 删除其他
 export function otherRemove(options) {
   classicWindowList = classicWindowList.filter((item, index) => {
@@ -220,7 +285,15 @@ export function rightRemove(options) {
       return true;
     }
   });
-  showPage(options);
+  showPage(options); 
+}
+// 刷新
+export function refresh(options) {
+  classicWindowList.forEach((item) => {
+    if (item.show) {
+      item.onRefresh(options);
+    }
+  });
 }
 // 是否显示导航栏页
 function showPage(options) {

@@ -1,5 +1,5 @@
 import { $ } from "./../dom.js";
-import DesktopWindow from "./window.js";
+import DesktopWindow, { windowAllDelete } from "./window.js";
 import { Object } from "core-js";
 export default function DesktopAppMenus(options) {
   if (options.menus) {
@@ -42,7 +42,11 @@ function DesktopMobileApp(options, res) {
   this.appWidth = options.clientWidth > 500 ? 100 : options.clientWidth / 4;
   let maxRow = parseInt(this.maxHeight / this.appWidth);
   this.appInterval = (this.maxHeight - maxRow * this.appWidth) / maxRow;
-  let $appContainer = $(`<div class="twin_desktop_app_container"></div>`);
+  // 如果有移除
+  windowAllDelete(options);
+  options.$appContainer && options.$appContainer.remove();
+
+  options.$appContainer = $(`<div class="twin_desktop_app_container"></div>`);
   this.$appContainerView = $(
     `<div class="twin_desktop_app_container_view"></div>`
   );
@@ -59,8 +63,8 @@ function DesktopMobileApp(options, res) {
       }
     });
     this.$appContainerView.append(this.$appContainerUl);
-    $appContainer.append(this.$appContainerView);
-    options.$loadContainer.append($appContainer);
+    options.$appContainer.append(this.$appContainerView);
+    options.$loadContainer.append(options.$appContainer);
     let startX = 0;
     let translateX = 0;
     let maxWidth = this.column * options.clientWidth;
@@ -119,10 +123,10 @@ DesktopMobileApp.prototype.DesktopMobileAppView = function(options, item) {
     item.meta
   );
   let $elemHtml = `<div class="twin_desktop_app_item" style="top:${top}px;left:${left}px;width:${this.appWidth}px;height:${this.appWidth}px;">`;
-  if (item.meta.iconType == "image") {
-    $elemHtml += `<i class="twin_desktop_app_item_image" style="background-image: url(${item.meta.icon});"></i>`;
-  } else if (item.meta.iconType == "icon") {
-    $elemHtml += `<i class="twin_desktop_app_item_icon" style="font-family: ${item.meta.fontFamily};color:${item.meta.color};">${item.meta.icon}</i>`;
+  if (item.meta.desktopIconType == "image" || !item.meta.desktopIconType && item.meta.iconType == "image") {
+    $elemHtml += `<i class="twin_desktop_app_item_image" style="background-image: url(${item.meta.desktopIcon || item.meta.icon});"></i>`;
+  } else if (item.meta.desktopIconType == "icon" || !item.meta.desktopIconType && item.meta.iconType == "icon") {
+    $elemHtml += `<i class="twin_desktop_app_item_icon" style="font-family: ${item.meta.fontFamily};color:${item.meta.color};">${item.meta.desktopIcon || item.meta.icon}</i>`;
   }
   let $elem = $(
     $elemHtml +
@@ -149,18 +153,17 @@ DesktopMobileApp.prototype.DesktopMobileAppView = function(options, item) {
 // PC桌面图标
 let leftMenus = [];
 function DesktopPcApp(options, res) {
+  // 如果有移除
+  windowAllDelete(options);
+  options.$appContainer && options.$appContainer.remove();
   this.appWidth = 100;
   this.column = 0;
   this.row = 0;
   this.currentIndex = 0;
   this.maxHeight = options.clientHeight - 100;
-  this.containerMaxWidth = options.clientWidth - 70;
+  this.containerMaxWidth = 0;
   let maxRow = parseInt(this.maxHeight / this.appWidth);
   this.appInterval = (this.maxHeight - maxRow * this.appWidth) / maxRow;
-  let $appContainer = $(`<div class="twin_desktop_app_container"></div>`);
-  this.$appContainerView = $(
-    `<div class="twin_desktop_app_container_view"></div>`
-  );
   this.screenIndex = 0;
   this.currentScreen = 0;
   this.currentIndex = 0;
@@ -170,7 +173,13 @@ function DesktopPcApp(options, res) {
     let $appMenus = undefined;
     let $appMenusBackground = undefined;
     let $appMenusContainer = undefined;
-    if (total > 18) {
+    let appContainerHtml = `<div class="twin_desktop_app_container"`;
+    this.$appContainerView = $(
+      `<div class="twin_desktop_app_container_view"></div>`
+    );
+    if (total > options.applicationMax) {
+      appContainerHtml += ` style="left: 70px"`
+      this.containerMaxWidth = options.clientWidth - 70;
       $appMenus = $(`<div class="twin_desktop_app_menus"></div>`);
       $appMenusBackground = $(
         `<div class="twin_desktop_app_menus_background"></div>`
@@ -182,12 +191,15 @@ function DesktopPcApp(options, res) {
       $appMenus.append($appMenusBackground);
       options.$loadContainer.append($appMenus);
     } else {
+      this.containerMaxWidth = options.clientWidth;
+      appContainerHtml += ` style="left: 0px"`
       this.$appContainerUl = $(
         `<div class="twin_desktop_app_container_ul"></div>`
       );
     }
+    options.$appContainer = $(appContainerHtml + `></div>`);
     list.forEach((item) => {
-      if (total > 18) {
+      if (total > options.applicationMax) {
         item.meta = Object.assign(
           {
             icon: "&#xe617;",
@@ -202,11 +214,13 @@ function DesktopPcApp(options, res) {
           this.screenIndex == 0 && item.children
             ? "twin_desktop_app_menu_active"
             : ""
-        }">`;
-        if (item.meta.iconType == "image") {
-          $menusElemHtml += `<i class="twin_desktop_app_menu_item_image" style="background-image: url(${item.meta.icon});"></i>`;
-        } else if (item.meta.iconType == "icon") {
-          $menusElemHtml += `<i class="twin_desktop_app_menu_item_icon" style="font-family: ${item.meta.fontFamily};color:${item.meta.color};">${item.meta.icon}</i>`;
+          }">`;
+        
+        
+        if (item.meta.desktopIconType == "image" || !item.meta.desktopIconType && item.meta.iconType == "image") {
+          $menusElemHtml += `<i class="twin_desktop_app_menu_item_image" style="background-image: url(${item.meta.desktopIcon || item.meta.icon});"></i>`;
+        } else if (item.meta.desktopIconType == "icon" || !item.meta.desktopIconType && item.meta.iconType == "icon") {
+          $menusElemHtml += `<i class="twin_desktop_app_menu_item_icon" style="font-family: ${item.meta.fontFamily};color:${item.meta.color};">${item.meta.desktopIcon || item.meta.icon}</i>`;
         }
         let $menusElem = $(
           $menusElemHtml + `<span>${item.meta.title}</span></div>`
@@ -257,47 +271,52 @@ function DesktopPcApp(options, res) {
         }
       }
     });
-    if (total < 18) {
+    if (total < options.applicationMax) {
       this.$appContainerView.append(this.$appContainerUl);
+      this.screenIndex += 1;
     }
-    $appContainer.append(this.$appContainerView);
-    options.$loadContainer.append($appContainer);
-    this.$appContainerView.on("mousewheel", function(e) {
-      if (e.wheelDelta > 0) {
-        if (_this.currentScreen > 0) {
-          _this.currentScreen -= 1;
-          leftMenus.forEach((childItem, index) => {
-            if (index == _this.currentScreen) {
-              childItem.addClass("twin_desktop_app_menu_active");
-            } else {
-              childItem.removeClass("twin_desktop_app_menu_active");
-            }
-          });
-          _this.$appContainerView
-            .css(
-              "transform",
-              "translateY(" + -(_this.currentScreen * _this.maxHeight) + "px)"
-            )
-            .css("transition", "all 0.3s");
+    options.$appContainer.append(this.$appContainerView);
+    options.$loadContainer.append(options.$appContainer);
+    let clearTime;
+    this.$appContainerView.on("mousewheel", function (e) {
+      clearTime && clearTimeout(clearTime);
+      clearTime = setTimeout(() => {
+        if (e.wheelDelta > 0) {
+          if (_this.currentScreen > 0) {
+            _this.currentScreen -= 1;
+            leftMenus.forEach((childItem, index) => {
+              if (index == _this.currentScreen) {
+                childItem.addClass("twin_desktop_app_menu_active");
+              } else {
+                childItem.removeClass("twin_desktop_app_menu_active");
+              }
+            });
+            _this.$appContainerView
+              .css(
+                "transform",
+                "translateY(" + -(_this.currentScreen * _this.maxHeight) + "px)"
+              )
+              .css("transition", "all 0.3s");
+          }
+        } else {
+          if (_this.currentScreen < _this.screenIndex - 1) {
+            _this.currentScreen += 1;
+            leftMenus.forEach((childItem, index) => {
+              if (index == _this.currentScreen) {
+                childItem.addClass("twin_desktop_app_menu_active");
+              } else {
+                childItem.removeClass("twin_desktop_app_menu_active");
+              }
+            });
+            _this.$appContainerView
+              .css(
+                "transform",
+                "translateY(" + -(_this.currentScreen * _this.maxHeight) + "px)"
+              )
+              .css("transition", "all 0.3s");
+          }
         }
-      } else {
-        if (_this.currentScreen < _this.screenIndex - 1) {
-          _this.currentScreen += 1;
-          leftMenus.forEach((childItem, index) => {
-            if (index == _this.currentScreen) {
-              childItem.addClass("twin_desktop_app_menu_active");
-            } else {
-              childItem.removeClass("twin_desktop_app_menu_active");
-            }
-          });
-          _this.$appContainerView
-            .css(
-              "transform",
-              "translateY(" + -(_this.currentScreen * _this.maxHeight) + "px)"
-            )
-            .css("transition", "all 0.3s");
-        }
-      }
+      }, 100);
     });
   } else {
     alert("【twin-layout】至少要有一个菜单");
@@ -322,10 +341,10 @@ DesktopPcApp.prototype.DesktopPcAppView = function(
     item.meta
   );
   let $elemHtml = `<div class="twin_desktop_app_item" style="top:${top}px;left:${left}px;width:${this.appWidth}px;height:${this.appWidth}px;">`;
-  if (item.meta.iconType == "image") {
-    $elemHtml += `<i class="twin_desktop_app_item_image" style="background-image: url(${item.meta.icon});"></i>`;
-  } else if (item.meta.iconType == "icon") {
-    $elemHtml += `<i class="twin_desktop_app_item_icon" style="font-family: ${item.meta.fontFamily};color:${item.meta.color};">${item.meta.icon}</i>`;
+  if (item.meta.desktopIconType == "image" || !item.meta.desktopIconType && item.meta.iconType == "image") {
+    $elemHtml += `<i class="twin_desktop_app_item_image" style="background-image: url(${item.meta.desktopIcon || item.meta.icon});"></i>`;
+  } else if (item.meta.desktopIconType == "icon" || !item.meta.desktopIconType && item.meta.iconType == "icon") {
+    $elemHtml += `<i class="twin_desktop_app_item_icon" style="font-family: ${item.meta.fontFamily};color:${item.meta.color};">${item.meta.desktopIcon || item.meta.icon}</i>`;
   }
   let $elem = $(
     $elemHtml +
@@ -343,6 +362,7 @@ DesktopPcApp.prototype.DesktopPcAppView = function(
       this.currentIndex = 0;
       this.row += 1;
       this.column = 0;
+      this.screenIndex += 1;
       this.$appContainerView.append(this.$appContainerUl);
       this.$appContainerUl = $(
         `<div class="twin_desktop_app_container_ul"></div>`

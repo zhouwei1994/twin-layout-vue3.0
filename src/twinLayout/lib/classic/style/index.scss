@@ -33,6 +33,15 @@
   .twin_classic_window_box {
     padding: 10px;
     overflow: auto;
+    .twin_classic_window_container_iframe {
+      display: block;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      border: 0px none;
+      overflow: hidden;
+      background-color: #FFF;
+    }
   }
 }
 .twin_classic_mobile {
