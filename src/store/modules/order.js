@@ -1,3 +1,3 @@
-exports.state = {};
-exports.mutations = {};
-exports.actions = {};
+export const state = {};
+export const mutations = {};
+export const actions = {};

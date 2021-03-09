@@ -1,6 +1,11 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import router from './router'
 import store from './store'
-
-createApp(App).use(store).use(router).mount('#app')
+import api from './api'
+import Antd from 'ant-design-vue'
+import '@/styles/antd-variables.less'
+let component = createApp(App);
+component.config.globalProperties.$api = api;
+component.use(store);
+component.use(Antd);
+component.mount('#app');

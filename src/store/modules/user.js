@@ -1,10 +1,8 @@
-exports.state = {
+export const state = {
   //用户数据
-  userInfo: {
-    token: "538573535345"
-  },
+  userInfo: {},
 };
-exports.mutations = {
+export const mutations = {
   //储存用户信息
   setUserInfo(state, data) {
     if (data) {
@@ -18,4 +16,4 @@ exports.mutations = {
     window.sessionStorage.removeItem("userInfo");
   },
 };
-exports.actions = {};
+export const actions = {};

@@ -1,10 +1,10 @@
-exports.state = {
+export const state = {
   loadingShow: false,
 };
 //缓存浏览器的数据名称
 const cacheNameList = ["userInfo"];
 let clearTime;
-exports.mutations = {
+export const mutations = {
   //取出缓存数据（打开APP就取出）
   setCacheData(state) {
     for (let name of cacheNameList) {
@@ -23,7 +23,7 @@ exports.mutations = {
   setLoadingShow(state, data) {
     if (state.loadingShow) {
       clearTime && clearTimeout(clearTime);
-      clearTime = setTimeout(function() {
+      clearTime = setTimeout(function () {
         state.loadingShow = data;
       }, 300);
     } else {
@@ -31,4 +31,4 @@ exports.mutations = {
     }
   },
 };
-exports.actions = {};
+export const actions = {};
