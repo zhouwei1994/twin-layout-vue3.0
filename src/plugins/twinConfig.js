@@ -2,7 +2,8 @@ import twin from "twin-layout";
 import { createApp } from "vue";
 import { title, logo } from "@/config/config";
 // import { getRouterList } from "@/api/modules/admin";
-import { message } from 'ant-design-vue'
+import Antd from 'ant-design-vue/es'
+import { message, Form } from 'ant-design-vue'
 import store from "@/store";
 import api from '@/api'
 let twinLayout = undefined;
@@ -268,13 +269,13 @@ export default function () {
             stroke: rgba(${data.themeColor}, 1) !important;
         }`
   }
-  let componentData = [];
+  let componentData = {};
   // 窗口关闭
   twin.prototype.windowRemove = (data) => {
     //注销vue组件
-    if (data.type == "vue") {
+    if (data.$route.type == "component") {
       //注销vue组件
-      componentData[data.el].unmount();
+      componentData[data.$el].unmount();
     }
   };
   // 窗口打开
@@ -291,6 +292,7 @@ export default function () {
         let component = createApp(page.default);
         // 挂载组件
         component.config.globalProperties.$api = api;
+        component.config.globalProperties.$form = Form;
         component.config.globalProperties.twin = data;
         component.config.globalProperties.check = function (name) {
           if (name) {
@@ -309,8 +311,9 @@ export default function () {
             return false;
           }
         };
-        component.use(store).mount(data.el);
-        componentData[data.el] = component;
+        component.use(Antd);
+        component.use(store).mount(data.$el);
+        componentData[data.$el] = component;
       });
     }
   };

@@ -31,7 +31,6 @@ export default {
   }
 }
 </script>
-
 <style lang="scss">
 @import "@/styles/iconfont.scss";
 @import "@/styles/common.scss";
