@@ -8,9 +8,9 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "ant-design-vue": "^2.0.1",
     "axios": "^0.20.0",
     "core-js": "^3.6.5",
+    "element-plus": "^1.0.2-beta.34",
     "md5": "^2.3.0",
     "twin-layout": "^1.0.5",
     "vue": "^3.0.0-0",
@@ -24,6 +24,7 @@
     "@vue/cli-service": "~4.5.0",
     "@vue/compiler-sfc": "^3.0.0-0",
     "babel-eslint": "^10.1.0",
+    "babel-plugin-component": "^1.1.1",
     "babel-plugin-import": "^1.13.3",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^7.0.0-0",

@@ -22,13 +22,6 @@ export function logout() {
     method: "get",
   });
 }
-// 管理员获取菜单权限
-export function getRouterList() {
-  return request({
-    url: "/authority/v1/user_authority",
-    method: "get",
-  });
-}
 // 管理员修改个人信息
 export async function modifyPersonalInfo(data) {
   let httpData = data;

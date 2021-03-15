@@ -1,109 +1,103 @@
 <template>
-  <div id="components-form-demo-advanced-search">
-    <a-form class="ant-advanced-search-form" :form="form">
-      <a-row :gutter="24">
-        <a-col :span="8">
-          <a-form-item label="用户名">
-            <a-input placeholder="请输入用户名" />
-          </a-form-item>
-        </a-col>
-        <a-col :span="8">
-          <a-form-item label="手机号">
-            <a-input placeholder="请输入手机号" />
-          </a-form-item>
-        </a-col>
-        <a-col :span="8">
-          <a-form-item label="邮箱">
-            <a-input placeholder="请输入邮箱" />
-          </a-form-item>
-        </a-col>
-      </a-row>
-      <a-row>
-        <a-col :span="24" :style="{ textAlign: 'right' }">
-          <a-button type="primary" @click="onSearch">
-            搜索
-          </a-button>
-          <a-button :style="{ marginLeft: '8px' }" @click="handleReset">
-            清空
-          </a-button>
-        </a-col>
-      </a-row>
-    </a-form>
-    <a-table :columns="columns" :data-source="data" :scroll="{ x: 1500, y: 300 }">
-      <div slot="action" slot-scope="text">
-        <a-button type="primary">
-          编辑
-        </a-button>
-      </div>
-    </a-table>
+  <div class="roleManagement-container">
+    <el-form :inline="true" :model="queryForm">
+      <el-form-item v-if="check('add')">
+        <el-button icon="el-icon-plus" type="primary" @click="onAddEdit">添加</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-input v-model.trim="queryForm.userId" type="number" placeholder="请输入发布人ID" clearable />
+      </el-form-item>
+      <el-form-item>
+        <el-input v-model.trim="queryForm.id" placeholder="请输入文章ID" clearable />
+      </el-form-item>
+      <el-form-item>
+        <el-input v-model.trim="queryForm.classifyId" placeholder="请输入分类ID" clearable />
+      </el-form-item>
+      <el-form-item>
+        <el-button icon="el-icon-search" type="primary" @click="queryData">查询
+        </el-button>
+      </el-form-item>
+    </el-form>
+    <el-table :data="list" border default-expand-all :element-loading-text="elementLoadingText">
+      <el-table-column prop="id" label="文章ID"></el-table-column>
+      <el-table-column prop="userId" label="发布人ID"></el-table-column>
+      <el-table-column prop="classifyId" label="分类ID"></el-table-column>
+      <el-table-column prop="pageviews" label="浏览量"></el-table-column>
+      <el-table-column prop="likes" label="点赞数"></el-table-column>
+      <el-table-column prop="title" label="文章标题"></el-table-column>
+      <el-table-column v-if="check(['modify', 'delete'])" fixed="right" label="操作" width="200">
+        <template #default="scope">
+          <el-button v-if="check('modify')" type="text" @click="onAddEdit(scope.row)">编辑
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-pagination :current-page="queryForm.pageNo" :page-size="queryForm.pageSize" :layout="layout" :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange">
+    </el-pagination>
   </div>
 </template>
+
 <script>
-const columns = [
-  { title: 'Full Name', width: 100, dataIndex: 'name', key: 'name', fixed: 'left' },
-  { title: 'Age', width: 100, dataIndex: 'age', key: 'age', fixed: 'left' },
-  { title: 'Column 1', dataIndex: 'address', key: '1', width: 150 },
-  { title: 'Column 2', dataIndex: 'address', key: '2', width: 150 },
-  { title: 'Column 3', dataIndex: 'address', key: '3', width: 150 },
-  { title: 'Column 4', dataIndex: 'address', key: '4', width: 150 },
-  { title: 'Column 5', dataIndex: 'address', key: '5', width: 150 },
-  { title: 'Column 6', dataIndex: 'address', key: '6', width: 150 },
-  { title: 'Column 7', dataIndex: 'address', key: '7', width: 150 },
-  { title: 'Column 8', dataIndex: 'address', key: '8' },
-  {
-    title: 'Action',
-    key: 'operation',
-    fixed: 'right',
-    width: 100,
-    scopedSlots: { customRender: 'action' },
-  },
-];
-const data = [];
-for (let i = 0; i < 100; i++) {
-  data.push({
-    key: i,
-    name: `Edrward ${i}`,
-    age: 32,
-    address: `London Park no. ${i}`,
-  });
-}
 export default {
+  name: "ArticleList",
   data() {
     return {
-      data,
-      columns,
-      form: {},
+      list: [],
+      layout: "total, sizes, prev, pager, next, jumper",
+      total: 0,
+      selectRows: "",
+      elementLoadingText: "正在加载...",
+      queryForm: {
+        pageNo: 1,
+        pageSize: 10,
+        id: "",
+        classifyId: "",
+        userId: "",
+      },
     };
   },
   created() {
-  },
-  updated() {
-    console.log('updated');
+    this.fetchData();
   },
   methods: {
-    onSearch(e) {
-      e.preventDefault();
+    onAddEdit(row) {
+      if (row.id) {
+        this.twin.$router.push({
+          name: "ArticleAddModify",
+          title: "修改文章",
+          reload: true,
+          query: {
+            id: row.id
+          }
+        });
+      } else {
+        this.twin.$router.push({
+          name: "ArticleAddModify",
+          title: "添加文章",
+        });
+      }
     },
-    handleReset() {
-      this.form = {};
+    handleSizeChange(val) {
+      this.queryForm.pageSize = val;
+      this.fetchData();
+    },
+    handleCurrentChange(val) {
+      this.queryForm.pageNo = val;
+      this.fetchData();
+    },
+    queryData() {
+      this.queryForm.pageNo = 1;
+      this.fetchData();
+    },
+    fetchData() {
+      this.$api.articles.getArticlesList(this.queryForm).then((res) => {
+        this.list = res.data.data;
+        this.total = res.data.count;
+      });
     },
   },
 };
 </script>
-<style>
-.ant-advanced-search-form {
-  padding-bottom: 24px;
-}
 
-.ant-advanced-search-form .ant-form-item {
-  display: flex;
-}
-
-.ant-advanced-search-form .ant-form-item-control-wrapper {
-  flex: 1;
-}
-
-#components-form-demo-advanced-search .ant-form {
-  max-width: none;
-}
+<style lang="scss" scoped>
 </style>

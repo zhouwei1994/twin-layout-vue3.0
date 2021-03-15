@@ -2,8 +2,8 @@ import twin from "twin-layout";
 import { createApp } from "vue";
 import { title, logo } from "@/config/config";
 // import { getRouterList } from "@/api/modules/admin";
-import Antd from 'ant-design-vue/es'
-import { message, Form } from 'ant-design-vue'
+import elementUse from '@/plugins/element';
+import { ElMessage } from "element-plus";
 import store from "@/store";
 import api from '@/api'
 let twinLayout = undefined;
@@ -216,7 +216,7 @@ export default function () {
     // 消息通知hover事件
     noticeHover: (options, callback) => {
       callback(`
-        <div style="padding: 15px;">
+        <div style="padding: 15px; color:#333;">
           <div style="padding: 5px 0;">消息展开</div>
           <div style="padding: 5px 0;">消息展开</div>
         </div>
@@ -226,7 +226,7 @@ export default function () {
     onError(err) {
       window.console.error(err.message);
       if (err.type == "danger") {
-        message.error(err.message);
+        ElMessage.error(err.message);
       }
     }
   });
@@ -272,8 +272,9 @@ export default function () {
   let componentData = {};
   // 窗口关闭
   twin.prototype.windowRemove = (data) => {
+    console.log(componentData, data);
     //注销vue组件
-    if (data.$route.type == "component") {
+    if (data.$route.type == "component" && componentData[data.$el]) {
       //注销vue组件
       componentData[data.$el].unmount();
     }
@@ -289,12 +290,11 @@ export default function () {
         if (page.default.twinHide) {
           event.twinHide = page.default.twinHide;
         }
-        let component = createApp(page.default);
+        let app = createApp(page.default);
         // 挂载组件
-        component.config.globalProperties.$api = api;
-        component.config.globalProperties.$form = Form;
-        component.config.globalProperties.twin = data;
-        component.config.globalProperties.check = function (name) {
+        app.config.globalProperties.$api = api;
+        app.config.globalProperties.twin = data;
+        app.config.globalProperties.check = function (name) {
           if (name) {
             if (Array.isArray(name)) {
               let state = false;
@@ -311,9 +311,13 @@ export default function () {
             return false;
           }
         };
-        component.use(Antd);
-        component.use(store).mount(data.$el);
-        componentData[data.$el] = component;
+        elementUse(app);
+        if (componentData[data.$el]) {
+          //注销vue组件
+          componentData[data.$el].unmount();
+        }
+        app.use(store).mount(data.$el);
+        componentData[data.$el] = app;
       });
     }
   };

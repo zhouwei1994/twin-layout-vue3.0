@@ -57,7 +57,7 @@
 
 <script>
 import { title, logo, introduction } from "@/config/config";
-import { notification } from 'ant-design-vue'
+import { ElNotification } from 'element-plus'
 let clearTime;
 export default {
   name: "Login",
@@ -173,10 +173,11 @@ export default {
                   : hour < 18
                     ? "下午好"
                     : "晚上好";
-          notification.open({
-            message: `欢迎登录${title}`,
-            description: `${thisTime}！`,
-            icon: <a-icon type="smile" style="color: #108ee9" />,
+          ElNotification({
+            title: `欢迎登录${title}`,
+            message: `${thisTime}！`,
+            position: "top-right",
+            type: "success",
           });
         });
       }

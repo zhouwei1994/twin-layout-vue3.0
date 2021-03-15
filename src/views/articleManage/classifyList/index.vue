@@ -1,105 +1,106 @@
 <template>
-  <div id="components-form-demo-advanced-search">
-    <a-form class="ant-advanced-search-form" :form="form">
-      <a-row :gutter="24">
-        <a-col :span="8">
-          <a-form-item label="用户名">
-            <a-input placeholder="请输入用户名" />
-          </a-form-item>
-        </a-col>
-        <a-col :span="8">
-          <a-form-item label="手机号">
-            <a-input placeholder="请输入手机号" />
-          </a-form-item>
-        </a-col>
-        <a-col :span="8">
-          <a-form-item label="邮箱">
-            <a-input placeholder="请输入邮箱" />
-          </a-form-item>
-        </a-col>
-      </a-row>
-      <a-row>
-        <a-col :span="24" :style="{ textAlign: 'right' }">
-          <a-button type="primary" @click="onSearch">
-            搜索
-          </a-button>
-          <a-button :style="{ marginLeft: '8px' }" @click="handleReset">
-            清空
-          </a-button>
-        </a-col>
-      </a-row>
-    </a-form>
-    <a-table :columns="columns" :data-source="data" :scroll="{ x: 1500, y: 300 }">
-      <!-- <a slot="action" slot-scope="text">{{text}}</a> -->
-    </a-table>
+  <div class="roleManagement-container">
+    <el-form :inline="true" :model="queryForm">
+      <el-form-item v-if="check('add')">
+        <el-button icon="el-icon-plus" type="primary" @click="onAddEdit">添加</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-input v-model.trim="queryForm.parentId" type="number" placeholder="请输入父Id" clearable />
+      </el-form-item>
+      <el-form-item>
+        <el-button icon="el-icon-search" type="primary" @click="queryData">查询
+        </el-button>
+      </el-form-item>
+    </el-form>
+    <el-table :data="list" border default-expand-all :element-loading-text="elementLoadingText">
+      <el-table-column prop="id" label="文章分类ID"></el-table-column>
+      <el-table-column prop="parentId" label="父ID"></el-table-column>
+      <el-table-column prop="name" label="分类名称"></el-table-column>
+      <el-table-column label="图标">
+        <template #default="scope">
+          <el-image v-if="scope.row.icon" :src="scope.row.icon" fit="cover" :preview-src-list="[scope.row.icon]"></el-image>
+        </template>
+      </el-table-column>
+      <el-table-column prop="createdTime" label="创建时间"></el-table-column>
+      <el-table-column v-if="check(['modify', 'delete'])" fixed="right" label="操作" width="200">
+        <template #default="scope">
+          <el-button v-if="check('modify')" type="text" @click="onAddEdit(scope.row)">编辑
+          </el-button>
+          <el-button v-if="check('delete')" type="text" @click="onDelete(scope.row)">删除
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-pagination background :current-page="queryForm.pageNo" :page-size="queryForm.pageSize" :layout="layout" :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange">
+    </el-pagination>
+    <add-modify ref="addModify" @fetchData="fetchData"></add-modify>
   </div>
 </template>
+
 <script>
-const columns = [
-  { title: 'Full Name', width: 100, dataIndex: 'name', key: 'name', fixed: 'left' },
-  { title: 'Age', width: 100, dataIndex: 'age', key: 'age', fixed: 'left' },
-  { title: 'Column 1', dataIndex: 'address', key: '1', width: 150 },
-  { title: 'Column 2', dataIndex: 'address', key: '2', width: 150 },
-  { title: 'Column 3', dataIndex: 'address', key: '3', width: 150 },
-  { title: 'Column 4', dataIndex: 'address', key: '4', width: 150 },
-  { title: 'Column 5', dataIndex: 'address', key: '5', width: 150 },
-  { title: 'Column 6', dataIndex: 'address', key: '6', width: 150 },
-  { title: 'Column 7', dataIndex: 'address', key: '7', width: 150 },
-  { title: 'Column 8', dataIndex: 'address', key: '8' },
-  {
-    title: 'Action',
-    key: 'operation',
-    fixed: 'right',
-    width: 100,
-    scopedSlots: { customRender: 'action' },
-  },
-];
-const data = [];
-for (let i = 0; i < 100; i++) {
-  data.push({
-    key: i,
-    name: `Edrward ${i}`,
-    age: 32,
-    address: `London Park no. ${i}`,
-  });
-}
+import addModify from "./addModify";
 export default {
+  name: "ClassifyList",
+  components: {
+    addModify,
+  },
   data() {
     return {
-      data,
-      columns,
-      form: {},
+      list: [],
+      layout: "total, sizes, prev, pager, next, jumper",
+      total: 0,
+      selectRows: "",
+      elementLoadingText: "正在加载...",
+      queryForm: {
+        pageNo: 1,
+        pageSize: 10,
+        parentId: "",
+      },
     };
   },
   created() {
+    this.fetchData();
   },
-  updated() {
-    console.log('updated');
-  },
+  mounted() { },
   methods: {
-    onSearch(e) {
-      e.preventDefault();
+    onAddEdit(row) {
+      if (row.id) {
+        this.$refs["addModify"].show(row);
+      } else {
+        this.$refs["addModify"].show();
+      }
     },
-    handleReset() {
-      this.form = {};
+    onDelete(row) {
+      this.$baseConfirm("你确定要删除当前项吗", null, () => {
+        this.$api.articles
+          .deleteArticleClassifys({ id: row.id })
+          .then((res) => {
+            this.$baseMessage(res.msg, "success");
+            this.fetchData();
+          });
+      });
+    },
+    handleSizeChange(val) {
+      this.queryForm.pageSize = val;
+      this.fetchData();
+    },
+    handleCurrentChange(val) {
+      this.queryForm.pageNo = val;
+      this.fetchData();
+    },
+    queryData() {
+      this.queryForm.pageNo = 1;
+      this.fetchData();
+    },
+    fetchData() {
+      this.$api.articles.getArticleClassifysList(this.queryForm).then((res) => {
+        this.list = res.data.data;
+        this.total = res.data.count;
+      });
     },
   },
 };
 </script>
-<style>
-.ant-advanced-search-form {
-  padding-bottom: 24px;
-}
 
-.ant-advanced-search-form .ant-form-item {
-  display: flex;
-}
-
-.ant-advanced-search-form .ant-form-item-control-wrapper {
-  flex: 1;
-}
-
-#components-form-demo-advanced-search .ant-form {
-  max-width: none;
-}
+<style lang="scss" scoped>
 </style>

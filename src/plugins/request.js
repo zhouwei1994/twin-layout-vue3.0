@@ -8,8 +8,8 @@ import {
   successCode,
   tokenName,
 } from "@/config/config";
-import { message } from 'ant-design-vue'
 import store from "@/store";
+import { ElMessage, ElLoading } from "element-plus";
 import { destroyTwin } from "@/plugins/twinConfig";
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API,
@@ -18,13 +18,14 @@ const service = axios.create({
     "Content-Type": contentType,
   },
 });
+let loadingInstance = undefined;
 service.interceptors.request.use(
   (config) => {
     if (store.state.userInfo && store.state.userInfo[tokenName]) {
       config.headers[tokenName] = store.state.userInfo[tokenName];
     }
     if (config.load) {
-      message.loading({ content: '加载中...' });
+      loadingInstance = ElLoading.service({ text: '加载中...' });
     }
     return config;
   }, error => {
@@ -32,13 +33,13 @@ service.interceptors.request.use(
   }
 );
 
-const errorMsg = () => {
-  message.error(message, messageDuration)
+const errorMsg = (msg) => {
+  ElMessage.error(msg, messageDuration / 1000)
 };
 
 service.interceptors.response.use(
   (response) => {
-    message.destroy();
+    loadingInstance && loadingInstance.close();
     const { data, config } = response;
     const { code, msg } = data;
     if (code == successCode) {
@@ -63,7 +64,7 @@ service.interceptors.response.use(
     }
   },
   (error) => {
-    message.destroy();
+    loadingInstance && loadingInstance.close();
     /*网络连接过程异常处理*/
     let { message } = error;
     switch (message) {
