@@ -276,8 +276,14 @@ export default function () {
     //注销vue组件
     if (data.$route.type == "component" && componentData[data.$el]) {
       //注销vue组件
-      componentData[data.$el].unmount();
+      try {
+        componentData[data.$el].unmount();
+      } catch (error) {
+        console.log("销毁失败");
+      }
+      delete componentData[data.$el];
     }
+    console.log(componentData, data);
   };
   // 窗口打开
   twin.prototype.windowOpen = (data, event) => {
@@ -314,7 +320,12 @@ export default function () {
         elementUse(app);
         if (componentData[data.$el]) {
           //注销vue组件
-          componentData[data.$el].unmount();
+          try {
+            componentData[data.$el].unmount();
+          } catch (error) {
+            console.log("销毁失败");
+          }
+          delete componentData[data.$el];
         }
         app.use(store).mount(data.$el);
         componentData[data.$el] = app;

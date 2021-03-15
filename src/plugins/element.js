@@ -1,4 +1,4 @@
-import ElementPlus, {
+import {
     ElAlert,
     ElAside,
     ElAutocomplete,
@@ -178,5 +178,5 @@ export default function (app) {
     plugins.forEach(plugin => {
         app.use(plugin)
     });
-    app.use(ElementPlus, { size: 'small', zIndex: 3000 });
+    // app.use(ElementPlus, { size: 'small', zIndex: 3000 });
 }
